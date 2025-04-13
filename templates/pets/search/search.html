@@ -1,0 +1,59 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% load pets_tags %}
+{% block page-title %}Pets{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/pets-list.css" %}">
+{% endblock %}
+{% block search %}
+    <form id="search-pet-list" method="GET" action="{% url "pets:pet-search" %}">
+        <input type="text" name="query" placeholder="Search for a pet...">
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+{% endblock %}
+{% block content %}
+    <div class="pet-list-container">
+        <div class="pets-list-filter">
+            <h2>Search Results</h2>
+            <a href="{% url "pets:pets-list" %}"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+        </div>
+        <div class="pets-section">
+            <div id="search-results-container">
+                {% if results|length == 0 %}
+                    <div id="search-error">
+                        <p>Sorry! No results available.</p>
+                        <!-- https://www.istockphoto.com/photo/intrigued-gm94740594-1876328?searchscope=image%2Cfilm -->
+                        <img class="error-img" src="{% static "img/search-error.png" %}"
+                             alt="Image of dog looking confused.">
+                    </div>
+                {% else %}
+                    <div id="{{ pet.name }}" class="pets-list">
+                        {% for pet in results %}
+                            <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
+                                <img class="pet-card-photo"
+                                     src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
+                                     alt="Image of {{ pet.name }}">
+                                <div class="pet-card-info">
+                                    <div>
+                                        <h2>{{ pet.name }}</h2>
+                                        <p>
+                                            {% if pet.type == "Dog" %}
+                                                <i class="fa-solid fa-dog"></i>
+                                            {% elif pet.type == "Cat" %}
+                                                <i class="fa-solid fa-cat"></i>
+                                            {% elif pet.type == "Bird" %}
+                                                <i class="fa-solid fa-crow"></i>
+                                            {% endif %}
+                                            {{ pet.breed }}</p>
+                                        <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                    </div>
+                                    <i>Last updated {{ pet.lastUpdated }}</i>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

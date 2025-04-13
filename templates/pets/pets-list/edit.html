@@ -1,0 +1,338 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% block page-title %}Create{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/create-pet.css" %}">
+{% endblock %}
+{% block script %}
+    <script src="{% static "js/form-validation.js" %}"></script>
+    <script src="{% static "js/add-vaccine-old.js" %}"></script>
+    <script src="{% static "js/delete-modal.js" %}"></script>
+{% endblock %}
+{% block content %}
+    <h2 class="title">Edit Pet Profile</h2>
+
+    <div class="create-pet-container">
+        <form id="create-pet-form" method="POST" action="{% url "pets:pet-details" pet.id %}">
+            {% csrf_token %}
+            <div class="basic-and-vet">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    <div class="basic-form">
+                        <!-- required -->
+                        <label for="petName">Pet's Name<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="petName" name="pet's name" value="{{ pet.name }}" disabled>
+                            <span id="petName-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="petType">Pet Species<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="petType" name="pet's species" disabled>
+                                <option value="dog" {% if pet.type == "dog" %}selected{% endif %}>Dog</option>
+                                <option value="cat" {% if pet.type == "cat" %}selected{% endif %}>Cat</option>
+                                <option value="fish" {% if pet.type == "fish" %}selected{% endif %}>Fish</option>
+                                <option value="small" {% if pet.type == "small" %}selected{% endif %}>Small Animal
+                                </option>
+                                <option value="bird" {% if pet.type == "bird" %}selected{% endif %}>Bird</option>
+                                <option value="reptile" {% if pet.type == "reptile" %}selected{% endif %}>Reptile
+                                </option>
+                            </select>
+                            <span id="petType-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="breed">Breed<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="breed" name="pet's breed" value="{{ pet.breed }}">
+                            <span id="breed-error" class="error-message"></span>
+                        </div>
+
+                        <label for="pfp">Profile Picture</label>
+                        <div>
+                            <input type="file" id="pfp" name="pet's profile picture" accept="image/*" class="hidden">
+                            <label for="pfp">Upload Photo</label>
+                            <span id="pfp-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="dob">Date of Birth<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="date" id="dob" name="pet's birthday" value="{{ pet.dob|date:'Y-m-d' }}"
+                                   disabled>
+                            <span id="dob-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="wgt">Weight (lbs)<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="wgt" name="pet's weight" value="{{ pet.weight }}">
+                            <span id="wgt-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="spay">Spayed/Neutered?<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="spay" name="pet's spay/neuter status">
+                                <option value="true" {% if pet.spayed == True %}selected{% endif %}>Yes</option>
+                                <option value="false" {% if pet.spayed == False %}selected{% endif %}>No</option>
+                            </select>
+                            <span id="spay-error" class="error-message "></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h2>Vet Information</h2>
+                    <div class="vet-form">
+                        <!-- required -->
+                        <label for="vetfname">First Name<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetfname" name="vet's first name" value="{{ pet.vet.firstName }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id="vetfname-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetlname">Last Name<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetlname" name="vet's last name" value="{{ pet.vet.lastName }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id=" vetlname-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetPhone">Phone Number<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="tel" id="vetPhone" name="vet's phone number" value="{{ pet.vet.phone }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id="vetPhone-error" class="error-message"></span>
+                        </div>
+
+                        <!-- requried -->
+                        <label for="vetEmail">Email Address<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetEmail" name="vet's email address" value="{{ pet.vet.email }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id="vetEmail-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetAddress">Address<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetAddress" name="vet's address" value="{{ pet.vet.address }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id=" vetAddress-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetCity">City<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetCity" name="vet's city" value="{{ pet.vet.city }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id="vetCity-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetState">State<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="vetState" name="vetState"
+                                    {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                                <option value="" disabled {% if not pet.vet.state %}selected{% endif %}>Select</option>
+                                <option value="AL" {% if pet.vet.state == "AL" %}selected{% endif %}>Alabama</option>
+                                <option value="AK" {% if pet.vet.state == "AK" %}selected{% endif %}>Alaska</option>
+                                <option value="AZ" {% if pet.vet.state == "AZ" %}selected{% endif %}>Arizona</option>
+                                <option value="AR" {% if pet.vet.state == "AR" %}selected{% endif %}>Arkansas</option>
+                                <option value="AS" {% if pet.vet.state == "AS" %}selected{% endif %}>American Samoa
+                                </option>
+                                <option value="CA" {% if pet.vet.state == "CA" %}selected{% endif %}>California</option>
+                                <option value="CO" {% if pet.vet.state == "CO" %}selected{% endif %}>Colorado</option>
+                                <option value="CT" {% if pet.vet.state == "CT" %}selected{% endif %}>Connecticut
+                                </option>
+                                <option value="DE" {% if pet.vet.state == "DE" %}selected{% endif %}>Delaware</option>
+                                <option value="DC" {% if pet.vet.state == "DC" %}selected{% endif %}>District of
+                                    Columbia
+                                </option>
+                                <option value="FL" {% if pet.vet.state == "FL" %}selected{% endif %}>Florida</option>
+                                <option value="GA" {% if pet.vet.state == "GA" %}selected{% endif %}>Georgia</option>
+                                <option value="GU" {% if pet.vet.state == "GU" %}selected{% endif %}>Guam</option>
+                                <option value="HI" {% if pet.vet.state == "HI" %}selected{% endif %}>Hawaii</option>
+                                <option value="ID" {% if pet.vet.state == "ID" %}selected{% endif %}>Idaho</option>
+                                <option value="IL" {% if pet.vet.state == "IL" %}selected{% endif %}>Illinois</option>
+                                <option value="IN" {% if pet.vet.state == "IN" %}selected{% endif %}>Indiana</option>
+                                <option value="IA" {% if pet.vet.state == "IA" %}selected{% endif %}>Iowa</option>
+                                <option value="KS" {% if pet.vet.state == "KS" %}selected{% endif %}>Kansas</option>
+                                <option value="KY" {% if pet.vet.state == "KY" %}selected{% endif %}>Kentucky</option>
+                                <option value="LA" {% if pet.vet.state == "LA" %}selected{% endif %}>Louisiana</option>
+                                <option value="ME" {% if pet.vet.state == "ME" %}selected{% endif %}>Maine</option>
+                                <option value="MD" {% if pet.vet.state == "MD" %}selected{% endif %}>Maryland</option>
+                                <option value="MA" {% if pet.vet.state == "MA" %}selected{% endif %}>Massachusetts
+                                </option>
+                                <option value="MI" {% if pet.vet.state == "MI" %}selected{% endif %}>Michigan</option>
+                                <option value="MN" {% if pet.vet.state == "MN" %}selected{% endif %}>Minnesota</option>
+                                <option value="MS" {% if pet.vet.state == "MS" %}selected{% endif %}>Mississippi
+                                </option>
+                                <option value="MO" {% if pet.vet.state == "MO" %}selected{% endif %}>Missouri</option>
+                                <option value="MT" {% if pet.vet.state == "MT" %}selected{% endif %}>Montana</option>
+                                <option value="NE" {% if pet.vet.state == "NE" %}selected{% endif %}>Nebraska</option>
+                                <option value="NV" {% if pet.vet.state == "NV" %}selected{% endif %}>Nevada</option>
+                                <option value="NH" {% if pet.vet.state == "NH" %}selected{% endif %}>New Hampshire
+                                </option>
+                                <option value="NJ" {% if pet.vet.state == "NJ" %}selected{% endif %}>New Jersey</option>
+                                <option value="NM" {% if pet.vet.state == "NM" %}selected{% endif %}>New Mexico</option>
+                                <option value="NY" {% if pet.vet.state == "NY" %}selected{% endif %}>New York</option>
+                                <option value="NC" {% if pet.vet.state == "NC" %}selected{% endif %}>North Carolina
+                                </option>
+                                <option value="ND" {% if pet.vet.state == "ND" %}selected{% endif %}>North Dakota
+                                </option>
+                                <option value="MP" {% if pet.vet.state == "MP" %}selected{% endif %}>Northern Mariana
+                                    Islands
+                                </option>
+                                <option value="OH" {% if pet.vet.state == "OH" %}selected{% endif %}>Ohio</option>
+                                <option value="OK" {% if pet.vet.state == "OK" %}selected{% endif %}>Oklahoma</option>
+                                <option value="OR" {% if pet.vet.state == "OR" %}selected{% endif %}>Oregon</option>
+                                <option value="PA" {% if pet.vet.state == "PA" %}selected{% endif %}>Pennsylvania
+                                </option>
+                                <option value="PR" {% if pet.vet.state == "PR" %}selected{% endif %}>Puerto Rico
+                                </option>
+                                <option value="RI" {% if pet.vet.state == "RI" %}selected{% endif %}>Rhode Island
+                                </option>
+                                <option value="SC" {% if pet.vet.state == "SC" %}selected{% endif %}>South Carolina
+                                </option>
+                                <option value="SD" {% if pet.vet.state == "SD" %}selected{% endif %}>South Dakota
+                                </option>
+                                <option value="TN" {% if pet.vet.state == "TN" %}selected{% endif %}>Tennessee</option>
+                                <option value="TX" {% if pet.vet.state == "TX" %}selected{% endif %}>Texas</option>
+                                <option value="TT" {% if pet.vet.state == "TT" %}selected{% endif %}>Trust Territories
+                                </option>
+                                <option value="UT" {% if pet.vet.state == "UT" %}selected{% endif %}>Utah</option>
+                                <option value="VT" {% if pet.vet.state == "VT" %}selected{% endif %}>Vermont</option>
+                                <option value="VA" {% if pet.vet.state == "VA" %}selected{% endif %}>Virginia</option>
+                                <option value="VI" {% if pet.vet.state == "VI" %}selected{% endif %}>Virgin Islands
+                                </option>
+                                <option value="WA" {% if pet.vet.state == "WA" %}selected{% endif %}>Washington</option>
+                                <option value="WV" {% if pet.vet.state == "WV" %}selected{% endif %}>West Virginia
+                                </option>
+                                <option value="WI" {% if pet.vet.state == "WI" %}selected{% endif %}>Wisconsin</option>
+                                <option value="WY" {% if pet.vet.state == "WY" %}selected{% endif %}>Wyoming</option>
+                            </select>
+
+                            <span id="vetState-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetZip">Zip / Postal Code<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetZip" name="vet's zip code" value="{{ pet.vet.zipCode }}"
+                                   {% if request.session.role == "vet" or pet.relation != "owner" %}disabled{% endif %}>
+                            <span id="vetZip-error" class="error-message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <h2>Medical History</h2>
+                <div id="condition-template" class="form-textarea">
+                    <input type="text" class="condition-title" placeholder="Title"/>
+                    <textarea class="condition-desc" placeholder="Description"></textarea>
+                    <span class="condition-error error-message"></span>
+                </div>
+
+                {% for condition in pet.conditions %}
+                    <div class="form-textarea">
+                        {# <label for="condition-title-{{ condition.id }}">Title:</label>#}
+                        <input type="text" id="condition-title{{ condition.id }}" placeholder="Title"
+                               value="{{ condition.title }}"/>
+
+                        {# <label for="condition-desc{{ condition.id }}">Description</label>#}
+                        <textarea id="condition-desc{{ condition.id }}"
+                                  name="pet's diet">{{ condition.description }}</textarea>
+                        <span id="condition-error" class="error-message"></span>
+                    </div>
+                {% endfor %}
+                <button type="button" class="secondary-button">+ Add Section</button>
+                <h3>Vaccines (<span id="num-vac-entries">{{ pet.vaccines.length }}</span>)</h3>
+                <div class="vaccines">
+
+                    <h3 class="vacc-header">Name</h3>
+                    <h3 class="vacc-header">Last done</h3>
+                    <h3 class="vacc-header">Next due</h3>
+                    <h3 class="vacc-header">Delete</h3>
+
+                    <div id="vaccine-template" class="vaccine-entry">
+                        <div class="form-input" id="vac-name">
+                            <input type="text" class="vac-name"/>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="form-input" id="last-done">
+                            <input type="date" class="last-done"/>
+                            <span class="error-message"></span>
+                        </div>
+
+                        <div class="form-input" id="next-due">
+                            <input type="date" class="next-due"/>
+                            <span class="error-message"></span>
+                        </div>
+                        <i class="fa-solid fa-trash-can remove-vaccine"></i>
+                    </div>
+
+
+                    {% for vac in pet.vaccines %}
+                        <label for="vac-name-{{ vac.id }}" class="individual-vac-label">Vaccine</label>
+                        <div class="form-input">
+                            <input type="text" id="vac-name-{{ vac.id }}" name="vac-name-{{ vac.id }}"
+                                   value="{{ vac.name }}">
+                            <span id="vac-name-{{ vac.id }}-error" class="error-message"></span>
+                        </div>
+
+                        <label for="last-done-{{ vac.id }}" class="individual-vac-label">Last done</label>
+                        <div class="form-input">
+                            <input type="date" id="last-done-{{ vac.id }}" name="last-done-{{ vac.id }}"
+                                   value="{{ vac.lastDone | date:'Y-m-d' }}">
+                            <span id="last-done-{{ vac.id }}-error" class="error-message"></span>
+                        </div>
+
+                        <label for="next-due-{{ vac.id }}" class="individual-vac-label">Next due</label>
+                        <div class="form-input">
+                            <input type="date" id="next-due-{{ vac.id }}1" name="next-due-{{ vac.id }}"
+                                   value="{{ vac.nextDue | date:'Y-m-d' }}">
+                            <span id="next-due-{{ vac.id }}-error" class="error-message"></span>
+                        </div>
+                        <i class="fa-solid fa-trash-can"></i>
+                    {% endfor %}
+
+                </div>
+                <button type="button" id="add-vaccine" class="secondary-button">+ Add Vaccine</button>
+            </div>
+            <div class="form-section">
+                <h2>Upload Files</h2>
+                <input type="file" id="pet-files" name="pet-files" accept=".pdf" class="hidden" multiple>
+                <label for="pet-files">Upload Files</label>
+
+            </div>
+            <div class="buttons">
+                <button type="submit" class="primary-button submit-button">Save Changes</button>
+                {% if request.session.role == "owner" and pet.relation == "owner" %}
+                <button type="button" class="open-delete-modal" onclick="openDeleteModal()">Delete Pet</button>
+                {% endif %}
+            </div>
+            <div id="form-submitted" class="display-none">Changes Saved!</div>
+        </form>
+    </div>
+
+    <div id="delete-modal" class="delete-modal">
+        <div class="delete-modal-content">
+            <h3>Are you sure you want to delete this pet?</h3>
+            <p>Deleting a pet is permanent. Once you delete your pet, you cannot recover any of their associated data.</p>
+            <div class="delete-buttons">
+                <form method="POST" action="{% url 'pets:pet-delete' pet.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-btn">Yes, delete this pet</button>
+                </form>
+                <button type="button" onclick="closeDeleteModal()" class="cancel-btn">No, cancel</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "pets/base.html" %}
+{% load pets_tags %}
+{% load static %}
+{% block page-title %}Home{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/login.css" %}">
+{% endblock %}
+{% block content %}
+    <div class="login-window">
+        <h2>Login</h2>
+        <form id="login-box" action="{% url "pets:login" %}" method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <input type="submit" class="secondary-button" name="submit" value="Login">
+            <a href="#">Create an account</a>
+        </form>
+    </div>
+{% endblock %}

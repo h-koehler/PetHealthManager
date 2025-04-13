@@ -1,0 +1,269 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% block page-title %}Create{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/create-pet.css" %}">
+{% endblock %}
+{% block script %}
+    <script src="{% static "js/form-validation.js" %}"></script>
+    <script src="{% static "js/add-vaccine-old.js" %}"></script>
+{% endblock %}
+{% block content %}
+    <h2 class="title">Create Pet Profile</h2>
+
+    <div class="create-pet-container">
+        {#    once fully implemented, this will redirect to the pet details view of the pet that was just created#}
+        <form id="create-pet-form" method="POST" action="{% url "pets:pet-details" 1 %}">
+            {% csrf_token %}
+            <div class="basic-and-vet">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    <div class="basic-form">
+                        <!-- required -->
+                        <label for="petName">Pet's Name<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="petName" name="pet's name">
+                            <span id="petName-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="petType">Pet Species<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="petType" name="pet's species">
+                                <option value="" disabled selected>Select</option>
+                                <option value="dog">Dog</option>
+                                <option value="cat">Cat</option>
+                                <option value="fish">Fish</option>
+                                <option value="small">Small Animal</option>
+                                <option value="bird">Bird</option>
+                                <option value="reptile">Reptile</option>
+                            </select>
+                            <span id="petType-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="breed">Breed<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="breed" name="pet's breed">
+                            <span id="breed-error" class="error-message"></span>
+                        </div>
+
+                        <label for="pfp">Profile Picture</label>
+                        <div>
+                            <input type="file" id="pfp" name="pet's profile picture" accept="image/*" class="hidden">
+                            <label for="pfp">Upload Photo</label>
+                            <span id="pfp-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="dob">Date of Birth<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="date" id="dob" name="pet's birthday">
+                            <span id="dob-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="wgt">Weight (lbs)<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="wgt" name="pet's weight">
+                            <span id="wgt-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="spay">Spayed/Neutered?<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="spay" name="pet's spay/neuter status">
+                                <option value="" disabled selected>Select</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            <span id="spay-error" class="error-message "></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h2>Vet Information</h2>
+                    <div class="vet-form">
+                        <!-- required -->
+                        <label for="vetfname">First Name<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetfname" name="vet's first name">
+                            <span id="vetfname-error" class="error-message"></span>
+                        </div>
+                        <!-- required -->
+                        <label for="vetlname">Last Name<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetlname" name="vet's last name">
+                            <span id="vetlname-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetAddress">Address<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetAddress" name="vet's address">
+                            <span id="vetAddress-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetCity">City<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetCity" name="vet's city">
+                            <span id="vetCity-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetState">State<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="vetState" name="vet's state">
+                                <option value="" disabled selected>Select</option>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="AS">American Samoa</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District of Columbia</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="GU">Guam</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="MP">Northern Mariana Islands</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="PR">Puerto Rico</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="TT">Trust Territories</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="VI">Virgin Islands</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                            <span id="vetState-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetZip">Zip / Postal Code<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="text" id="vetZip" name="vet's zip code">
+                            <span id="vetZip-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetPhone">Phone Number<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="tel" id="vetPhone" name="vet's phone number">
+                            <span id="vetPhone-error" class="error-message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <h2>Medical History</h2>
+                <div class="conditions">
+                    <div id="condition-template" class="form-textarea">
+                        <div class="condition-title-and-delete">
+                            <div>
+                                <input type="text" class="condition-title" placeholder="Title"/>
+                                <span id="condition-title-error" class="error-message"></span>
+                            </div>
+                            <button id="delete-condition" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                        <textarea class="condition-description" placeholder="Description"></textarea>
+                        <span id="description-error" class="error-message"></span>
+                    </div>
+
+                    <div class="form-textarea">
+                        <div class="condition-title-and-delete">
+                            <div>
+                                <input type="text" id="condition-title-1" placeholder="Title"/>
+                                <span id="condition-title-error-1" class="error-message"></span>
+                            </div>
+                            <button id="delete-condition-1" class="delete-med-hist"><i
+                                    class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                        <textarea id="condition-description-1" name="condition-desc-1"
+                                  placeholder="Description"></textarea>
+                        <span id="description-error-1r" class="error-message"></span>
+                    </div>
+                </div>
+                <button type="button" id="add-condition" class="secondary-button">+ Add Section</button>
+                
+                <h3>Vaccines (<span id="num-vac-entries">2</span>)</h3>
+                <div class="vaccines">
+
+                    <h3 class="vacc-header">Name</h3>
+                    <h3 class="vacc-header">Last done</h3>
+                    <h3 class="vacc-header">Next due</h3>
+                    <h3 class="vacc-header">Delete</h3>
+
+                    <label for="vac-name-1" class="individual-vac-label">Vaccine</label>
+                    <div class="form-input">
+                        <input type="text" id="vac-name-1" name="vac-name-1">
+                        <span id="vac-name-1-error" class="error-message"></span>
+                    </div>
+
+                    <label for="last-done-1" class="individual-vac-label">Last done</label>
+                    <div class="form-input">
+                        <input type="date" id="last-done-1" name="last-done-1">
+                        <span id="last-done-1-error" class="error-message"></span>
+                    </div>
+
+                    <label for="next-due-1" class="individual-vac-label">Next due</label>
+                    <div class="form-input">
+                        <input type="date" id="next-due-1" name="next-due-1">
+                        <span id="next-due-1-error" class="error-message"></span>
+                    </div>
+
+                    <label for="delete-1" class="individual-vac-label">Delete</label>
+                    <button id="delete-1" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+                <button type="button" id="add-vaccine" class="secondary-button">+ Add Vaccine</button>
+            </div>
+            <div class="form-section">
+                <h2>Upload Files</h2>
+                <input type="file" id="pet-files" name="pet-files" accept=".pdf" class="hidden" multiple>
+                <label for="pet-files">Upload Files</label>
+
+
+            </div>
+            <button type="submit" class="primary-button submit-button">Create Pet</button>
+            <div id="form-submitted" class="display-none">Pet Created!</div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Health Manager | {% block page-title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static "css/global.css" %}">
+    {% block stylesheet %}{% endblock %}
+    <script src="https://kit.fontawesome.com/dec04a1e75.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{% static "js/dropdown.js" %}"></script>
+    <script src="{% static "js/logout-modal.js" %}"></script>
+    {% block script %}{% endblock %}
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <div class="logo">
+            <img src="{% static "img/logo.png" %}" alt="Logo">
+            <h1>Pet Health Manager</h1>
+        </div>
+
+        <div class="nav-bar">
+            {% block search %}{% endblock %}
+            <div class="nav-buttons">
+                <a href="{% url 'pets:home' %}">Home</a>
+                <a href="{% url 'pets:pets-list' %}">Pets</a>
+                {% if request.session.username %}
+                {% else %}
+                    <a href="{% url 'pets:login' %}">Login</a>
+                {% endif %}
+            </div>
+            {% if request.session.username %}
+                <div class="nav-icon">
+                    <button><i class="fa-solid fa-message"></i></button>
+                </div>
+                <div class="user-greeting">Welcome back, {{ request.session.username }}!</div>
+                <div class="nav-icon">
+                    <button onclick="openModal()"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    <div id="logout-modal" class="modal">
+                        <div class="modal-content">
+                            <h3>Log out from Pet Health Manager?</h3>
+                            <div class="logout-buttons">
+                                <form method="POST" action="{% url 'pets:logout' %}">
+                                    {% csrf_token %}
+                                    <button id="logout-btn">Yes, log out</button>
+                                </form>
+                                <button id="no-btn" onclick="closeModal()">No, stay logged in</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+        <div class="nav-dropdown">
+            <button onclick="showDropdown()" class="dropdown-button">
+                <i class="fa-solid fa-bars fa-1x"></i>
+            </button>
+            <div class="dropdown-content" id="dropdown">
+                <div class="dropdown-link top"><a href="#">Home</a></div>
+                <div class="dropdown-link"><a href="{% url "pets:pets-list" %}">Pets</a></div>
+                {% if request.session.username %}
+                    <div class="dropdown-link"><a href="{% url 'pets:logout' %}">Logout</a></div>
+                    <div class="dropdown-link bot"><a href="#">Messages</a></div>
+                {% else %}
+                    <div class="dropdown-link bot"><a href="{% url 'pets:login' %}">Login</a></div>
+                {% endif %}
+                
+            </div>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <div class="footer-links">
+            <a href="#about">About</a>
+            <div>|</div>
+            <a href="#privacy">Privacy</a>
+            <div>|</div>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="copyright">
+            <p><i class="fa-solid fa-copyright"></i> 2025 Pet Health Manager. All Rights Reserved.</p>
+        </div>
+    </footer>
+</div>
+</body>
+
+</html>

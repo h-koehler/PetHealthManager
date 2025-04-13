@@ -1,0 +1,116 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% load pets_tags %}
+{% block page-title %}Pets{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/pets-list.css" %}">
+{% endblock %}
+{% block search %}
+    <form id="search-pet-list" method="GET" action="{% url "pets:pet-search" %}">
+        <input id="query" type="text" name="query" placeholder="Search for a pet...">
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+{% endblock %}
+{% block content %}
+    <div class="pet-list-container">
+        <div class="pets-list-filter">
+            {% if request.session.role == 'owner' %}
+                <a class="primary-button" href="{% url "pets:pet-create" %}"><i class="fa-solid fa-plus"></i> New
+                    Pet</a>
+            {% else %}
+                <div></div>
+            {% endif %}
+            <p><i class="fa-solid fa-arrow-down-wide-short"></i> Sort & Filter</p>
+        </div>
+        {% if request.session.role == 'vet' %}
+            <div class="pets-section">
+                <h2>Clients' Pets</h2>
+                <div class="pets-list">
+                    {% for pet in pets %}
+                        <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
+                            <img class="pet-card-photo" src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
+                                 alt="Image of {{ pet.name }}">
+                            <div class="pet-card-info">
+                                <div>
+                                    <h2>{{ pet.name }}</h2>
+                                    <p>
+                                        {% if pet.type == "Dog" %}
+                                            <i class="fa-solid fa-dog"></i>
+                                        {% elif pet.type == "Cat" %}
+                                            <i class="fa-solid fa-cat"></i>
+                                        {% elif pet.type == "Bird" %}
+                                            <i class="fa-solid fa-crow"></i>
+                                        {% endif %}
+                                        {{ pet.breed }}</p>
+                                    <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                </div>
+                                <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="pets-section">
+                <h2>Your Pets</h2>
+                <div class="pets-list">
+                    {% for pet in pets %}
+                        {% if pet.relation == "owner" %}
+                            <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
+                                <img class="pet-card-photo"
+                                     src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
+                                     alt="Image of {{ pet.name }}">
+                                <div class="pet-card-info">
+                                    <div>
+                                        <h2>{{ pet.name }}</h2>
+                                        <p>
+                                            {% if pet.type == "Dog" %}
+                                                <i class="fa-solid fa-dog"></i>
+                                            {% elif pet.type == "Cat" %}
+                                                <i class="fa-solid fa-cat"></i>
+                                            {% elif pet.type == "Bird" %}
+                                                <i class="fa-solid fa-crow"></i>
+                                            {% endif %}
+                                            {{ pet.breed }}</p>
+                                        <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                    </div>
+                                    <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="pets-section">
+                <h2>Clients' Pets</h2>
+                <div class="pets-list">
+                    {% for pet in pets %}
+                        {% if pet.relation == "client" %}
+                            <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
+                                <img class="pet-card-photo"
+                                     src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
+                                     alt="Image of {{ pet.name }}">
+                                <div class="pet-card-info">
+                                    <div>
+                                        <h2>{{ pet.name }}</h2>
+                                        <p>
+                                            {% if pet.type == "Dog" %}
+                                                <i class="fa-solid fa-dog"></i>
+                                            {% elif pet.type == "Cat" %}
+                                                <i class="fa-solid fa-cat"></i>
+                                            {% elif pet.type == "Bird" %}
+                                                <i class="fa-solid fa-crow"></i>
+                                            {% endif %}
+                                            {{ pet.breed }}</p>
+                                        <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                    </div>
+                                    <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
