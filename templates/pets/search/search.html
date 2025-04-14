@@ -30,9 +30,13 @@
                     <div id="{{ pet.name }}" class="pets-list">
                         {% for pet in results %}
                             <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
-                                <img class="pet-card-photo"
-                                     src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
-                                     alt="Image of {{ pet.name }}">
+                                {% if pet.pfp %}
+                                    <img class="pet-card-photo"
+                                         src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
+                                {% else %}
+                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                         alt="Default pet profile image">
+                                {% endif %}
                                 <div class="pet-card-info">
                                     <div>
                                         <h2>{{ pet.name }}</h2>

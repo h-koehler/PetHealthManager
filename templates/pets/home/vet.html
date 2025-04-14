@@ -12,83 +12,39 @@
             <p><i class="fa-solid fa-arrow-down-wide-short"></i> Sort & Filter</p>
         </div>
         {% for feedItem in feed %}
-            {% if feedItem.isSolved %}
-                <div></div>
-            {% else %}
-                <div class="feed-item">
-                    <div class="feed-content">
-                        <h2><a href="#">{{ feedItem.title }}</a></h2>
-                        <p>{{ feedItem.description }}</p>
-                        <p class="last-updated">Request made {{ feedItem.dateCreated |get_elapsed_time }}</p>
-                    </div>
-
-                    <a href="{% url "pets:pet-details" feedItem.pet.id %}" class="pet-card">
-                        <img class="pet-card-photo" src="{% static "img/" %}{{ feedItem.pet.name|get_img_file_name }}.jpg" alt="Image of {{ feedItem.pet.name }}">
-                        <div class="pet-card-info">
-                            <div>
-                                <h2>{{ feedItem.pet.name }}</h2>
-                                <p>
-                                    {% if pet.type == "Dog" %}
-                                            <i class="fa-solid fa-dog"></i>
-                                        {% elif pet.type == "Cat" %}
-                                            <i class="fa-solid fa-cat"></i>
-                                        {% elif pet.type == "Bird" %}
-                                            <i class="fa-solid fa-crow"></i>
-                                        {% endif %}
-                                    {{ feedItem.pet.breed}}</p>
-                                <p>{{ feedItem.pet.sex }}, {{ feedItem.pet.dob|get_age_from_dob }}</p>
-                            </div>
-                            <i>Last updated {{ feedItem.pet.lastUpdated|pretty_date}}</i>
-                        </div>
-                    </a>
+            <div class="feed-item">
+                <div class="feed-content">
+                    <h2><a href="#">{{ feedItem.title }}</a></h2>
+                    <p>{{ feedItem.description }}</p>
+                    <p class="last-updated">Request made {{ feedItem.dateCreated |naturalday }}</p>
                 </div>
-            {% endif %}
+
+                <a href="{% url "pets:pet-details" feedItem.pet.id %}" class="pet-card">
+                    {% if feedItem.pet.pfp %}
+                        <img class="pet-card-photo" src="{{ feedItem.pet.pfp.url }}"
+                             alt="Image of {{ feedItem.pet.name }}">
+                    {% else %}
+                        <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                             alt="Default pet profile image">
+                    {% endif %}
+                    <div class="pet-card-info">
+                        <div>
+                            <h2>{{ feedItem.pet.name }}</h2>
+                            <p>
+                                {% if pet.type == "Dog" %}
+                                    <i class="fa-solid fa-dog"></i>
+                                {% elif pet.type == "Cat" %}
+                                    <i class="fa-solid fa-cat"></i>
+                                {% elif pet.type == "Bird" %}
+                                    <i class="fa-solid fa-crow"></i>
+                                {% endif %}
+                                {{ feedItem.pet.breed }}</p>
+                            <p>{{ feedItem.pet.sex }}, {{ feedItem.pet.dob|get_age_from_dob }}</p>
+                        </div>
+                        <i>Last updated {{ feedItem.pet.lastUpdated|pretty_date }}</i>
+                    </div>
+                </a>
+            </div>
         {% endfor %}
-        
-        {#        #}
-        {#        <div class="feed-item">#}
-        {#            <div class="feed-content">#}
-        {#                <h2>My cat has a runny nose</h2>#}
-        {#                <p>My indoor cat has had a runny nose for the past 2 days. Should I be concnered?#}
-        {#                </p>#}
-        {#                <p class="last-updated">Request made on 02/17/2025 at 10:45</p>#}
-        {#            </div>#}
-        {##}
-        {#            <a class="pet-card">#}
-        {#                <!-- https://unsplash.com/photos/orange-tabby-cat-on-gray-sofa-Bh_5_lcuhSg -->#}
-        {#                <img class="pet-card-photo" src="{% static "img/garfield.img" %}" alt="Image of Garfield">#}
-        {#                <div class="pet-card-info">#}
-        {#                    <div>#}
-        {#                        <h2>Garfield</h2>#}
-        {#                        <p><i class="fa-solid fa-cat"></i> Orange Tabby</p>#}
-        {#                        <p>Male, 6 yrs. 3 mo. old</p>#}
-        {#                    </div>#}
-        {#                    <i>Last updated 01/12/2025</i>#}
-        {#                </div>#}
-        {#            </a>#}
-        {##}
-        {#        </div>#}
-        {#        <div class="feed-item">#}
-        {#            <div class="feed-content">#}
-        {#                <h2>My bird chipped his beak</h2>#}
-        {#                <p>I know birds can chip their beaks naturally, but I want to make sure my bird is okay. Is there#}
-        {#                    anything I should do to help him?</p>#}
-        {#                <p class="last-updated">Request made on 02/17/2025 at 10:38</p>#}
-        {#            </div>#}
-        {##}
-        {#            <a class="pet-card">#}
-        {#                <!-- https://unsplash.com/photos/a-green-and-yellow-bird-sitting-on-top-of-a-cage-hpRyLAgfja0 -->#}
-        {#                <img class="pet-card-photo" src="{% static "img/farfetchd.img" %}" alt="Iamge of Farfetch'd">#}
-        {#                <div class="pet-card-info">#}
-        {#                    <div>#}
-        {#                        <h2>Farfetch'd</h2>#}
-        {#                        <p><i class="fa-solid fa-crow"></i> Conure</p>#}
-        {#                        <p>Male, 2 yrs. 1 mo. old</p>#}
-        {#                    </div>#}
-        {#                    <i>Last updated 11/22/2024</i>#}
-        {#                </div>#}
-        {#            </a>#}
-        {##}
-        {#        </div>#}
     </div>
 {% endblock %}

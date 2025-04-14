@@ -1,0 +1,347 @@
+.title {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 1em;
+}
+
+/* containers */
+
+.create-pet-container>form {
+    margin: 0em 5em 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    align-items: center;
+}
+
+.basic-and-vet {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+    justify-content: center;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background-color: var(--pale-green);
+    border-radius: 2em;
+    padding: 1em 1.5em;
+}
+
+/* form & inputs */
+.form-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section>div.basic-form,
+.form-section>div.vet-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: .5em;
+    align-items: center;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="tel"],
+input[type="email"],
+select,
+textarea {
+    font-family: var(--default-font-family);
+    font-size: 1em;
+    border: .15em solid var(--mantis-green);
+    border-radius: 1em;
+    padding: 0.25em .75em;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+    outline: .15em solid var(--brunswick-green);
+}
+
+select {
+    background-color: var(--ivory-green);
+}
+
+/* templates */
+#condition-template,
+#vaccine-template {
+    display: none;
+}
+
+/* modal */
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}
+
+.delete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.delete-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    padding: 1em 1.5em;
+    background: var(--pale-green);
+    width: 21em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 2em;
+}
+
+.open-delete-modal {
+    background: none;
+    border: none;
+    font-size: 1em;
+    color: var(--brunswick-green)
+}
+
+.open-delete-modal:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.delete-buttons {
+    display: flex;
+    flex-direction: row ;
+    gap: 1em;
+}
+
+.delete-btn {
+    border: none;
+    background: var(--brunswick-green);
+    padding: .5em 1em;
+    border-radius: 5em;
+    color: white;
+    font-size: 1em;
+}
+
+.delete-btn:hover {
+    background: var(--mantis-green);
+    color: var(--brunswick-green);
+    cursor: pointer;
+}
+
+.cancel-btn {
+    color: var(--brunswick-green);
+    font-size: 1em;
+    background: none;
+    border: none;
+}
+
+.cancel-btn:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* style classes */
+.required {
+    color: red;
+}
+
+.hidden {
+    /*visibility:hidden;*/
+    /*display: none;*/
+    position: absolute;
+    left: -999em;
+}
+
+.display-none {
+    display: none;
+}
+
+.error-message {
+    color: red;
+
+}
+
+.input-error {
+    outline: .15em solid red;
+}
+
+#form-submitted {
+    color: var(--pine-green);
+    font-weight:600;
+}
+
+/* file upload buttons */
+input[type="file"]#pfp+label {
+    /*upload pet profile pic*/
+    font-family: var(--default-font-family);
+    background: var(--brunswick-green);
+    color: var(--ivory-green);
+    padding: .25em .75em;
+    border-radius: 5em;
+    font-size: 1em;
+    border: none;
+    width: fit-content;
+}
+
+input[type="file"]#pfp+label:hover,
+input[type="file"]#pfp+label:active {
+    background: var(--mantis-green);
+    color: var(--brunswick-green);
+    cursor: pointer;
+}
+
+input[type="file"]#pet-files+label {
+    /*upload additional files*/
+    font-family: var(--default-font-family);
+    background: var(--brunswick-green);
+    color: var(--ivory-green);
+    padding: .25em .75em;
+    border-radius: 5em;
+    font-size: 1em;
+    border: none;
+    width: fit-content;
+}
+
+input[type="file"]#pet-files+label:hover,
+input[type="file"]#pet-files+label:active {
+    background: var(--mantis-green);
+    color: var(--brunswick-green);
+    cursor: pointer;
+}
+
+.form-section>input#pet-files+label {
+    align-self: center;
+}
+
+/* medical history textbox */
+textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    resize: none;
+}
+
+/* vaccines grid */
+.vacc-header {
+    visibility: visible !important;
+}
+
+.vaccines {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    align-items: center;
+    grid-column-gap: .5em;
+    grid-row-gap: .5em;
+    max-width: 50em;
+}
+
+.vaccines>div>input {
+    max-width: 100%;
+}
+
+.delete-med-hist {
+    width: fit-content;
+    padding: .5em .6em;
+    border-radius: 5em;
+    background: none;
+    border: none;
+    font-size: 1em;
+}
+
+.delete-med-hist:hover {
+    cursor: pointer;
+    background: var(--mantis-green);
+}
+
+/* align +Add Section and +Add Vaccine buttons*/
+.form-textarea {
+    display: flex;
+    flex-direction: column;
+    gap: .25em;
+}
+
+.form-section>.vaccines+button,
+#add-condition {
+    align-self: center;
+}
+
+.form-textarea input[type="text"] {
+    font-weight: bold
+}
+
+.condition-title-and-delete {
+    display: flex;
+    flex-direction: row;
+    gap: .5em;
+}
+
+/* for mobile format*/
+.individual-vac-label {
+    display: none;
+    font-weight: 500;
+}
+
+/* mobile format */
+@media screen and (max-width: 1310px) {
+    .basic-and-vet {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 1020px) {
+    .vaccines {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+        justify-items: start;
+        align-items: center;
+    }
+
+    .vaccines>div>input {
+        box-sizing: border-box;
+        width: 100%;
+        min-width: 0;
+        justify-self: stretch;
+    }
+
+    .vacc-header,
+    .vaccines>i {
+        display: none;
+    }
+
+    .individual-vac-label {
+        display: inline;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .create-pet-container>form {
+        margin: 1em;
+    }
+
+    .form-section {
+        padding: 1em;
+    }
+
+    .title {
+        margin-bottom: .5em;
+    }
+}

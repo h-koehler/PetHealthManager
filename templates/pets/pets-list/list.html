@@ -13,104 +13,133 @@
 {% endblock %}
 {% block content %}
     <div class="pet-list-container">
-        <div class="pets-list-filter">
-            {% if request.session.role == 'owner' %}
-                <a class="primary-button" href="{% url "pets:pet-create" %}"><i class="fa-solid fa-plus"></i> New
-                    Pet</a>
-            {% else %}
-                <div></div>
-            {% endif %}
-            <p><i class="fa-solid fa-arrow-down-wide-short"></i> Sort & Filter</p>
-        </div>
-        {% if request.session.role == 'vet' %}
-            <div class="pets-section">
-                <h2>Clients' Pets</h2>
-                <div class="pets-list">
-                    {% for pet in pets %}
-                        <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
-                            <img class="pet-card-photo" src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
-                                 alt="Image of {{ pet.name }}">
-                            <div class="pet-card-info">
-                                <div>
-                                    <h2>{{ pet.name }}</h2>
-                                    <p>
-                                        {% if pet.type == "Dog" %}
-                                            <i class="fa-solid fa-dog"></i>
-                                        {% elif pet.type == "Cat" %}
-                                            <i class="fa-solid fa-cat"></i>
-                                        {% elif pet.type == "Bird" %}
-                                            <i class="fa-solid fa-crow"></i>
-                                        {% endif %}
-                                        {{ pet.breed }}</p>
-                                    <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
-                                </div>
-                                <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
+        {% if pets|length == 0 and clients|length == 0 %}
+            <div class="empty-pet-list">
+                <p>Sorry! There are no pets to display at the moment.</p>
+                <!-- https://unsplash.com/photos/a-close-up-of-a-cat-with-green-eyes-FntgSXIlSwM -->
+                <img class="empty-list-img" src="{% static "img/empty-list.jpg" %}"
+                     alt="Image of a cat looking sad">
             </div>
         {% else %}
-            <div class="pets-section">
-                <h2>Your Pets</h2>
-                <div class="pets-list">
-                    {% for pet in pets %}
-                        {% if pet.relation == "owner" %}
+
+            <div class="pets-list-filter">
+                {% if request.session.role == 'owner' %}
+                    <a class="primary-button" href="{% url "pets:pet-create" %}"><i class="fa-solid fa-plus"></i> New
+                        Pet</a>
+                {% else %}
+                    <div></div>
+                {% endif %}
+                <form method="GET" id="sort-form" class="filter-dropdown">
+                    <span>Sort By: </span>
+                    <select name="sort" id="sort" onchange="document.getElementById('sort-form').submit()">
+                        <option value="updated" {% if sort == "updated" %}selected{% endif %}>Last Updated</option>
+                        <option value="name" {% if sort == "name" %}selected{% endif %}>Alphabetical (A-Z)</option>
+                        <option value="dob-ascending" {% if sort == "dob-ascending" %}selected{% endif %}>Age
+                            (Ascending)
+                        </option>
+                        <option value="dob-descending" {% if sort == "dob-descending" %}selected{% endif %}>Age
+                            (Descending)
+                        </option>
+                    </select>
+                </form>
+            </div>
+            {% if request.session.role == 'vet' %}
+                <div class="pets-section">
+                    <h2>Clients' Pets</h2>
+                    <div class="pets-list">
+                        {% for pet in clients %}
                             <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
-                                <img class="pet-card-photo"
-                                     src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
-                                     alt="Image of {{ pet.name }}">
+                                {% if pet.pfp %}
+                                    <img class="pet-card-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
+                                {% else %}
+                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                         alt="Default pet profile image">
+                                {% endif %}
                                 <div class="pet-card-info">
                                     <div>
                                         <h2>{{ pet.name }}</h2>
                                         <p>
-                                            {% if pet.type == "Dog" %}
+                                            {% if pet.type == "d" %}
                                                 <i class="fa-solid fa-dog"></i>
-                                            {% elif pet.type == "Cat" %}
+                                            {% elif pet.type == "c" %}
                                                 <i class="fa-solid fa-cat"></i>
-                                            {% elif pet.type == "Bird" %}
+                                            {% elif pet.type == "b" %}
                                                 <i class="fa-solid fa-crow"></i>
                                             {% endif %}
                                             {{ pet.breed }}</p>
-                                        <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                        <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
                                     <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
                                 </div>
                             </a>
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            <div class="pets-section">
-                <h2>Clients' Pets</h2>
-                <div class="pets-list">
-                    {% for pet in pets %}
-                        {% if pet.relation == "client" %}
+            {% else %}
+                <div class="pets-section">
+                    <h2>Your Pets</h2>
+                    <div class="pets-list">
+                        {% for pet in pets %}
                             <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
-                                <img class="pet-card-photo"
-                                     src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg"
-                                     alt="Image of {{ pet.name }}">
+                            {% if pet.pfp %}
+                                    <img class="pet-card-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
+                                {% else %}
+                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                         alt="Default pet profile image">
+                                {% endif %}
+                                <div class="pet-card-info">
+                                
+                                    <div>
+                                        <h2>{{ pet.name }}</h2>
+                                        <p>
+                                            {% if pet.type == "d" %}
+                                                <i class="fa-solid fa-dog"></i>
+                                            {% elif pet.type == "c" %}
+                                                <i class="fa-solid fa-cat"></i>
+                                            {% elif pet.type == "b" %}
+                                                <i class="fa-solid fa-crow"></i>
+                                            {% endif %}
+                                            {{ pet.breed }}</p>
+                                        <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
+                                    </div>
+                                    <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="pets-section">
+                    <h2>Clients' Pets</h2>
+                    <div class="pets-list">
+                        {% for pet in clients %}
+                            <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
+                                {% if pet.pfp %}
+                                    <img class="pet-card-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
+                                {% else %}
+                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                         alt="Default pet profile image">
+                                {% endif %}
                                 <div class="pet-card-info">
                                     <div>
                                         <h2>{{ pet.name }}</h2>
                                         <p>
-                                            {% if pet.type == "Dog" %}
+                                            {% if pet.type == "d" %}
                                                 <i class="fa-solid fa-dog"></i>
-                                            {% elif pet.type == "Cat" %}
+                                            {% elif pet.type == "c" %}
                                                 <i class="fa-solid fa-cat"></i>
-                                            {% elif pet.type == "Bird" %}
+                                            {% elif pet.type == "b" %}
                                                 <i class="fa-solid fa-crow"></i>
                                             {% endif %}
                                             {{ pet.breed }}</p>
-                                        <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                        <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
                                     <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
                                 </div>
                             </a>
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}

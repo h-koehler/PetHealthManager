@@ -1,4 +1,10 @@
+console.log("Form validation script loaded");
+
 $(document).ready(function () {
+    document.getElementById("create-pet-form").addEventListener("submit", () => {
+    console.log("Form submit event fired");
+});
+
     const $form = $("#create-pet-form");
 
     $form.attr("method", "POST");
@@ -9,21 +15,22 @@ $(document).ready(function () {
 
     // validate form on submit
     $form.on("submit", function (event) {
-        event.preventDefault();
-        let isValid = true;
-
-        $form.find("input, select, textarea").each(function () {
-            if (!validateInput($(this))) {
-                isValid = false;
-            }
-        });
-
-        if (!isValid) {
-            event.preventDefault();
-        } else {
-            this.submit();
-            $("#form-submitted").removeClass("display-none");
-        }
+        console.log("Submit handler called");
+        // event.preventDefault();
+        // let isValid = true;
+        //
+        // $form.find("input, select, textarea").each(function () {
+        //     if (!validateInput($(this))) {
+        //         isValid = false;
+        //     }
+        // });
+        //
+        // if (!isValid) {
+        //     event.preventDefault();
+        // } else {
+        //     event.target.submit();
+        //     $("#form-submitted").removeClass("display-none");
+        // }
     })
 
     // validate single input field
@@ -168,33 +175,34 @@ $(document).ready(function () {
                 $input.addClass("input-error");
                 return false;
             }
-        } else if ($input.attr("id").includes("vac-name")) {
-            if (val.length < 3) {
-                $error.text("The vaccine name must be at least 3 characters long.");
-                $input.addClass('input-error');
-                return false;
-            } else if (val.length > 29) {
-                $error.text("The vaccine name must less than 30 characters long.");
-                $input.addClass('input-error');
-                return false;
-            }
-        } else if ($input.attr("id").includes("last")) {
-            const inputDate = new Date(val);
-            const today = new Date();
-            if (inputDate > today) {
-                $error.text(`Please enter a date on or before today.`);
-                $input.addClass("input-error");
-                return false;
-            }
-        } else if ($input.attr("id").includes("next")) {
-            const inputDate = new Date(val);
-            const today = new Date();
-            if (inputDate <= today) {
-                $error.text(`Please enter a date after today.`);
-                $input.addClass("input-error");
-                return false;
-            }
         }
+        // } else if ($input.attr("id").includes("vac-name")) {
+        //     if (val.length < 3) {
+        //         $error.text("The vaccine name must be at least 3 characters long.");
+        //         $input.addClass('input-error');
+        //         return false;
+        //     } else if (val.length > 29) {
+        //         $error.text("The vaccine name must less than 30 characters long.");
+        //         $input.addClass('input-error');
+        //         return false;
+        //     }
+        // } else if ($input.attr("id").includes("last")) {
+        //     const inputDate = new Date(val);
+        //     const today = new Date();
+        //     if (inputDate > today) {
+        //         $error.text(`Please enter a date on or before today.`);
+        //         $input.addClass("input-error");
+        //         return false;
+        //     }
+        // } else if ($input.attr("id").includes("next")) {
+        //     const inputDate = new Date(val);
+        //     const today = new Date();
+        //     if (inputDate <= today) {
+        //         $error.text(`Please enter a date after today.`);
+        //         $input.addClass("input-error");
+        //         return false;
+        //     }
+        // }
 
         return true;
     }

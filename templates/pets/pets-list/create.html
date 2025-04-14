@@ -6,14 +6,16 @@
 {% endblock %}
 {% block script %}
     <script src="{% static "js/form-validation.js" %}"></script>
-    <script src="{% static "js/add-vaccine-old.js" %}"></script>
+    <script src="{% static "js/add-remove-medical-history.js" %}"></script>
+    <script src="{% static "js/display-filename-oncreate.js" %}"></script>
 {% endblock %}
 {% block content %}
     <h2 class="title">Create Pet Profile</h2>
-
     <div class="create-pet-container">
+
         {#    once fully implemented, this will redirect to the pet details view of the pet that was just created#}
-        <form id="create-pet-form" method="POST" action="{% url "pets:pet-details" 1 %}">
+        <form id="create-pet-form" method="POST" action="{% url "pets:pet-create" %}" enctype="multipart/form-data">
+            <div class="required-note"><span class="required">*</span> = Required</div>
             {% csrf_token %}
             <div class="basic-and-vet">
                 <div class="form-section">
@@ -22,14 +24,14 @@
                         <!-- required -->
                         <label for="petName">Pet's Name<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="petName" name="pet's name">
+                            <input type="text" id="petName" name="pet-name">
                             <span id="petName-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
                         <label for="petType">Pet Species<span class="required">*</span></label>
                         <div class="form-input">
-                            <select id="petType" name="pet's species">
+                            <select id="petType" name="pet-type">
                                 <option value="" disabled selected>Select</option>
                                 <option value="dog">Dog</option>
                                 <option value="cat">Cat</option>
@@ -44,35 +46,47 @@
                         <!-- required -->
                         <label for="breed">Breed<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="breed" name="pet's breed">
+                            <input type="text" id="breed" name="pet-breed">
                             <span id="breed-error" class="error-message"></span>
+                        </div>
+
+                        <!--required -->
+                        <label for="sex">Sex<span class="required">*</span></label>
+                        <div class="form-input">
+                            <select id="sex" name="pet-sex">
+                                <option value="" disabled selected>Select</option>
+                                <option value="male">Male</option>
+                                <option value="fenale">Female</option>
+                            </select>
+                            <span id="sex-error" class="error-message "></span>
                         </div>
 
                         <label for="pfp">Profile Picture</label>
                         <div>
-                            <input type="file" id="pfp" name="pet's profile picture" accept="image/*" class="hidden">
+                            <input type="file" id="pfp" name="pet-pfp" accept="image/*" class="hidden">
                             <label for="pfp">Upload Photo</label>
+                            <span id="pfp-filename" class="current-file">No file selected</span>
                             <span id="pfp-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
                         <label for="dob">Date of Birth<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="date" id="dob" name="pet's birthday">
+                            <input type="date" id="dob" name="pet-dob">
                             <span id="dob-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
                         <label for="wgt">Weight (lbs)<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="wgt" name="pet's weight">
+                            <input type="text" id="wgt" name="pet-wgt">
                             <span id="wgt-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
                         <label for="spay">Spayed/Neutered?<span class="required">*</span></label>
                         <div class="form-input">
-                            <select id="spay" name="pet's spay/neuter status">
+                            <select id="spay" name="pet-spay-status">
                                 <option value="" disabled selected>Select</option>
                                 <option value="true">Yes</option>
                                 <option value="false">No</option>
@@ -87,34 +101,47 @@
                         <!-- required -->
                         <label for="vetfname">First Name<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="vetfname" name="vet's first name">
+                            <input type="text" id="vetfname" name="vet-fname">
                             <span id="vetfname-error" class="error-message"></span>
                         </div>
                         <!-- required -->
                         <label for="vetlname">Last Name<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="vetlname" name="vet's last name">
+                            <input type="text" id="vetlname" name="vet-lname">
                             <span id="vetlname-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
-                        <label for="vetAddress">Address<span class="required">*</span></label>
+                        <label for="vetPhone">Phone Number<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="vetAddress" name="vet's address">
+                            <input type="tel" id="vetPhone" name="vet-phone">
+                            <span id="vetPhone-error" class="error-message"></span>
+                        </div>
+
+                        <!-- required -->
+                        <label for="vetEmail">Email Address<span class="required">*</span></label>
+                        <div class="form-input">
+                            <input type="email" id="vetEmail" name="vet-email">
+                            <span id="vetEmail-error" class="error-message"></span>
+                        </div>
+                        
+                        <label for="vetAddress">Address</label>
+                        <div class="form-input">
+                            <input type="text" id="vetAddress" name="vet-address">
                             <span id="vetAddress-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
                         <label for="vetCity">City<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="vetCity" name="vet's city">
+                            <input type="text" id="vetCity" name="vet-city">
                             <span id="vetCity-error" class="error-message"></span>
                         </div>
 
                         <!-- required -->
                         <label for="vetState">State<span class="required">*</span></label>
                         <div class="form-input">
-                            <select id="vetState" name="vet's state">
+                            <select id="vetState" name="vet-state">
                                 <option value="" disabled selected>Select</option>
                                 <option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
@@ -180,16 +207,10 @@
                         <!-- required -->
                         <label for="vetZip">Zip / Postal Code<span class="required">*</span></label>
                         <div class="form-input">
-                            <input type="text" id="vetZip" name="vet's zip code">
+                            <input type="text" id="vetZip" name="vet-zip">
                             <span id="vetZip-error" class="error-message"></span>
                         </div>
 
-                        <!-- required -->
-                        <label for="vetPhone">Phone Number<span class="required">*</span></label>
-                        <div class="form-input">
-                            <input type="tel" id="vetPhone" name="vet's phone number">
-                            <span id="vetPhone-error" class="error-message"></span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -202,56 +223,65 @@
                                 <input type="text" class="condition-title" placeholder="Title"/>
                                 <span id="condition-title-error" class="error-message"></span>
                             </div>
-                            <button id="delete-condition" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>
+                            <button id="delete-condition" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                         <textarea class="condition-description" placeholder="Description"></textarea>
                         <span id="description-error" class="error-message"></span>
                     </div>
-
-                    <div class="form-textarea">
-                        <div class="condition-title-and-delete">
-                            <div>
-                                <input type="text" id="condition-title-1" placeholder="Title"/>
-                                <span id="condition-title-error-1" class="error-message"></span>
-                            </div>
-                            <button id="delete-condition-1" class="delete-med-hist"><i
-                                    class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                        <textarea id="condition-description-1" name="condition-desc-1"
-                                  placeholder="Description"></textarea>
-                        <span id="description-error-1r" class="error-message"></span>
-                    </div>
                 </div>
                 <button type="button" id="add-condition" class="secondary-button">+ Add Section</button>
-                
-                <h3>Vaccines (<span id="num-vac-entries">2</span>)</h3>
+
+                <h3>Vaccines</h3>
                 <div class="vaccines">
 
                     <h3 class="vacc-header">Name</h3>
                     <h3 class="vacc-header">Last done</h3>
                     <h3 class="vacc-header">Next due</h3>
                     <h3 class="vacc-header">Delete</h3>
+                    <div id="vaccine-template">
+                        <label for="vac-name" class="individual-vac-label name-label">Vaccine</label>
+                        <div class="form-input name-input">
+                            <input type="text" id="vac-name" name="vac-name">
+                            <span id="vac-name-error" class="error-message"></span>
+                        </div>
 
-                    <label for="vac-name-1" class="individual-vac-label">Vaccine</label>
-                    <div class="form-input">
-                        <input type="text" id="vac-name-1" name="vac-name-1">
-                        <span id="vac-name-1-error" class="error-message"></span>
+                        <label for="last-done" class="individual-vac-label last-label">Last done</label>
+                        <div class="form-input last-input">
+                            <input type="date" id="last-done" name="last-done">
+                            <span id="last-done-error" class="error-message"></span>
+                        </div>
+
+                        <label for="next-due-1" class="individual-vac-label next-label">Next due</label>
+                        <div class="form-input next-input">
+                            <input type="date" id="next-due" name="next-due">
+                            <span id="next-due-error" class="error-message"></span>
+                        </div>
+
+                        <label for="vac-delete" class="individual-vac-label vac-delete">Delete</label>
+                        <button id="vac-delete" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
 
-                    <label for="last-done-1" class="individual-vac-label">Last done</label>
-                    <div class="form-input">
-                        <input type="date" id="last-done-1" name="last-done-1">
-                        <span id="last-done-1-error" class="error-message"></span>
-                    </div>
-
-                    <label for="next-due-1" class="individual-vac-label">Next due</label>
-                    <div class="form-input">
-                        <input type="date" id="next-due-1" name="next-due-1">
-                        <span id="next-due-1-error" class="error-message"></span>
-                    </div>
-
-                    <label for="delete-1" class="individual-vac-label">Delete</label>
-                    <button id="delete-1" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>
+{#                    <label for="vac-name-1" class="individual-vac-label">Vaccine</label>#}
+{#                    <div class="form-input">#}
+{#                        <input type="text" id="vac-name-1" name="vac-name">#}
+{#                        <span id="vac-name-error-1" class="error-message"></span>#}
+{#                    </div>#}
+{##}
+{#                    <label for="last-done-1" class="individual-vac-label">Last done</label>#}
+{#                    <div class="form-input">#}
+{#                        <input type="date" id="last-done-1" name="last-done-1">#}
+{#                        <span id="last-done-error-1" class="error-message"></span>#}
+{#                    </div>#}
+{##}
+{#                    <label for="next-due-1" class="individual-vac-label">Next due</label>#}
+{#                    <div class="form-input">#}
+{#                        <input type="date" id="next-due-1" name="next-due-1">#}
+{#                        <span id="next-due-error-1" class="error-message"></span>#}
+{#                    </div>#}
+{##}
+{#                    <label for="vac-delete-1" class="individual-vac-label">Delete</label>#}
+{#                    <button id="vac-delete-1" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>#}
                 </div>
                 <button type="button" id="add-vaccine" class="secondary-button">+ Add Vaccine</button>
             </div>
@@ -259,9 +289,8 @@
                 <h2>Upload Files</h2>
                 <input type="file" id="pet-files" name="pet-files" accept=".pdf" class="hidden" multiple>
                 <label for="pet-files">Upload Files</label>
-
-
             </div>
+            {#            <input type="hidden" name="owner" value="{{ request.session.username }}">#}
             <button type="submit" class="primary-button submit-button">Create Pet</button>
             <div id="form-submitted" class="display-none">Pet Created!</div>
         </form>

@@ -1,0 +1,144 @@
+/* feed containers - similar to other home page */
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    margin: 0 12em 2em;
+}
+
+.feed-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1em 2em;
+    background-color: var(--pale-green);
+    border-radius: 2em;
+    border: .2em solid var(--brunswick-green);
+    gap: 2em;
+    align-items: center;
+}
+
+.feed-content {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    max-width: 100%;
+}
+
+.last-updated {
+    font-style: italic;
+    font-weight: 300;
+    font-size: .8em;
+}
+
+/* pet card contaienrs - similar to pet list page*/
+.pet-card {
+    display: flex;
+    flex-direction: row;
+    border-radius: 1em;
+    border: .2em solid var(--brunswick-green);
+    background: white;
+    padding: 1em;
+    gap: 1em;
+    min-width: 25em;
+}
+
+.pet-card-photo {
+    border-radius: .75em;
+    border: .15em solid var(--pine-green);
+    max-height: 7em;
+    max-width: 7em;
+    height: 100%;
+    width: 100%;
+}
+
+.pet-card-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* sort button - not functional */
+.sort-filter {
+    align-self: end;
+}
+
+/* hoever effects */
+.sort-filter:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.feed-content:hover h2 {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+ul.pets-list li:hover {
+    cursor: pointer;
+}
+
+.pet-card:hover .pet-card-info h2 {
+    text-decoration: underline;
+}
+
+/* fix default link appearance */
+.feed-content h2>a {
+    color: var(--default-font-color);
+    text-decoration: none;
+}
+
+a.pet-card {
+    text-decoration: none;
+    color: var(--default-font-color);
+}
+
+/* mobile formatting */
+@media screen and (max-width: 1250px) {
+    .feed-item {
+        flex-direction: column;
+        padding: 1em 2em;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .feed-content {
+        align-self: start;
+    }
+
+    .feed-content > h2 {
+        font-size: 1.25em;
+    } 
+
+    .pet-card-info h2 {
+        font-size: 1.1em;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .feed {
+        margin: 1em;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .feed {
+        gap: 1em;
+    }
+    
+    .pet-card {
+        flex-direction: column;
+        gap: .5em;
+        max-width: 20em;
+        min-width: 0em;
+        width: 100%;
+    }
+
+    .pet-card-photo {
+        align-self: center;
+    }
+
+    .pet-card-info {
+        text-align: center;
+    }
+}

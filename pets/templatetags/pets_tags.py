@@ -21,10 +21,6 @@ def get_age_from_dob(dob):
         return f"{years} yrs, {months} mo. old"
 
 @register.filter
-def get_img_file_name(name):
-    return re.sub(r'[^a-zA-Z0-9]', '', name)
-
-@register.filter
 def pretty_date(dob):
     return dob.strftime("%b %d, %Y")
 
@@ -53,3 +49,21 @@ def get_elapsed_time(date):
         return "just now"
     else:
         return f"{seconds} seconds ago"
+
+@register.filter
+def pretty_phone_number(number):
+    digits = ''.join(filter(str.isdigit, number))
+
+    if len(digits) == 7:
+        return f"{digits[:3]}-{digits[3:]}"
+    elif len(digits) == 10:
+        return f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
+    elif len(digits) == 11 and digits.startswith("1"):
+        return f"+1 ({digits[1:4]}) {digits[4:7]}-{digits[7:]}"
+    else:
+        return number
+
+@register.filter
+def truncate_pfp_url(url):
+    url = str(url)
+    return url[13:] if url.startswith("pet_profiles/") else url

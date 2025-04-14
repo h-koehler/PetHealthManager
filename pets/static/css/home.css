@@ -1,0 +1,117 @@
+/* containers */
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    margin: 0 12em;
+}
+
+.feed-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1em 2em;
+    background-color: var(--pale-green);
+    border-radius: 2em;
+    border: .2em solid var(--brunswick-green);
+    gap: 2em;
+}
+
+.feed-content {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    overflow:auto;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+}
+
+.last-updated {
+    font-style: italic;
+    font-weight: 300;
+    font-size: .8em;
+}
+
+/* sort button - not functional */
+.sort-filter {
+    align-self: end;
+}
+
+.sort-filter:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* hover effects */
+.feed-item:hover {
+    cursor: pointer;
+}
+
+.feed-content h2:hover {
+    text-decoration: underline;
+}
+
+.comments > a:hover {
+    color: var(--mantis-green);
+}
+
+
+/* changing default link appearance */
+.feed-content h2>a {
+    color: var(--default-font-color);
+    text-decoration: none;;
+}
+
+/* changing comments appearence */
+.comments > a {
+    font-size: 2em;
+    color: var(--brunswick-green);
+}
+
+.comments > p {
+    font-size: 1.25em;
+}
+
+/* mobile formatting */
+@media screen and (max-width: 900px) {
+    .feed {
+        margin: 0 2em 2em;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .feed {
+        margin: 0 1em 1em;
+        gap: 1em;
+    }
+    
+    .feed-item {
+        flex-direction: column;
+        align-items:end;
+        gap: 0.5em;
+        padding: 1em;
+    }
+
+    .feed-content {
+        gap: .25em;
+    }
+
+    .feed-content > h2 {
+        font-size: 1.2em;
+    }
+
+    .comments {
+        flex-direction: row;
+        gap: .5em;
+    }
+
+    .comments > a {
+        font-size: 1.1em;
+    }
+}

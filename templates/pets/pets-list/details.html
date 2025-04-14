@@ -17,18 +17,24 @@
         <div class="details-container">
             <div class="top-card">
                 <div class="summary-details">
-                    <img class="pet-photo" src="{% static "img/" %}{{ pet.name|get_img_file_name }}.jpg" alt="Image of Willow">
+
+                    {% if pet.pfp %}
+                        <img class="pet-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
+                    {% else %}
+                        <img class="pet-photo" src="{% static 'img/default-pfp.jpg' %}"
+                             alt="Default pet profile image">
+                    {% endif %}
                     <div class="summary-info">
                         <h2>{{ pet.name }}</h2>
                         <p><b>Type/Breed:</b>
-                            {% if pet.type == "Dog" %}
+                            {% if pet.type == "d" %}
                                 <i class="fa-solid fa-dog"></i>
-                            {% elif pet.type == "Cat" %}
+                            {% elif pet.type == "c" %}
                                 <i class="fa-solid fa-cat"></i>
-                            {% elif pet.type == "Bird" %}
+                            {% elif pet.type == "b" %}
                                 <i class="fa-solid fa-crow"></i>
                             {% endif %} {{ pet.breed }}</p>
-                        <p><b>Sex:</b> {{ pet.sex }}</p>
+                        <p><b>Sex:</b> {{ pet.get_sex_display }}</p>
                         <p><b>Age:</b> {{ pet.dob|get_age_from_dob }} ({{ pet.dob|pretty_date }})</p>
                         <p><b>Weight:</b> {{ pet.weight }} lbs</p>
                         <p>
@@ -43,7 +49,8 @@
                 </div>
                 <div class="contact-info">
                     <div class="row">
-                        <a class="secondary-button" href="{% url 'pets:pet-edit' pet.id %}">Edit <i class="fa-solid fa-pencil"></i></a>
+                        <a class="secondary-button" href="{% url 'pets:pet-edit' pet.id %}">Edit <i
+                                class="fa-solid fa-pencil"></i></a>
                         <a class="secondary-button">Request <i
                                 class="fa-solid fa-comment-medical"></i></a>
                         <a class="secondary-button">Share <i class="fa-solid fa-share"></i></a>
@@ -51,21 +58,21 @@
                     <div>
                         <h3>Owner</h3>
                         <div class="contact-row">
-                            <p><i class="fa-solid fa-phone"></i> {{ pet.owner.phone }}</p>
+                            <p><i class="fa-solid fa-phone"></i> {{ pet.owner.phone|pretty_phone_number }}</p>
                             <p><i class="fa-solid fa-envelope"></i> {{ pet.owner.email }}</p>
                         </div>
                     </div>
                     <div>
                         <h3>Primary Vet</h3>
                         <div class="contact-row">
-                            <p><i class="fa-solid fa-phone"></i> {{ pet.vet.phone }}</p>
+                            <p><i class="fa-solid fa-phone"></i> {{ pet.vet.phone|pretty_phone_number }}</p>
                             <p><i class="fa-solid fa-envelope"></i> {{ pet.vet.email }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="condition-details">
-                {% for condition in pet.conditions %}
+                {% for condition in conditions %}
                     <div class={{ condition.title }}>
                         <h3>{{ condition.title }} <i class="fa-solid fa-chevron-down"></i></h3>
                         <p>{{ condition.description }}</p>
@@ -80,12 +87,12 @@
                         <th>Last done</th>
                         <th>Next due</th>
                     </tr>
-                    {% for vac in pet.vaccines %}
+                    {% for vac in vaccines %}
                         <tr>
-                        <td>{{ vac.name }}</td>
-                        <td>{{ vac.lastDone|pretty_date}}</td>
-                        <td>{{ vac.nextDue|pretty_date }}</td>
-                    </tr>
+                            <td>{{ vac.name }}</td>
+                            <td>{{ vac.lastDone|pretty_date }}</td>
+                            <td>{{ vac.nextDue|pretty_date }}</td>
+                        </tr>
                     {% endfor %}
                 </table>
             </div>
