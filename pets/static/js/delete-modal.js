@@ -9,12 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function openDeleteModal() {
         modal.style.display = "flex"
-        // document.body.classList.add('no-scroll')
     }
 
     function closeDeleteModal() {
         modal.style.display = "none"
-        // document.body.classList.remove('no-scroll')
     }
 
     window.openDeleteModal = openDeleteModal;

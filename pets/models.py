@@ -1,9 +1,15 @@
+import os
 from enum import Enum
 from datetime import datetime, timedelta
 from django.db import models
-
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 # Create your models here.
+
+def _delete_old_file(file):
+    if file and hasattr(file, 'path') and os.path.isfile(file.path):
+        os.remove(file.path)
 
 class Pet(models.Model):
     name = models.CharField(max_length=30)
@@ -55,6 +61,21 @@ class Pet(models.Model):
         elif user in self.nonOwners.all():
             return 'sitter'
         return 'unauthorized'
+
+    # check if current pfp is different from old pfp. if so, delete old pfp
+    def save(self, *args, **kwargs):
+        try:
+            old = Pet.objects.get(pk=self.pk)
+            if old.pfp and old.pfp != self.pfp:
+                _delete_old_file(old.pfp)
+        except Pet.DoesNotExist:
+            pass
+        super().save(*args, **kwargs)
+
+# delete pet pfp if pet is deleted
+@receiver(post_delete, sender=Pet)
+def delete_pet_pfp_file(sender, instance, **kwargs):
+    _delete_old_file(instance.pfp)
 
 class User(models.Model):
     VET = "v"

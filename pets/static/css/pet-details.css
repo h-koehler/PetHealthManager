@@ -2,7 +2,7 @@
 .pet-details-container {
     display: flex;
     flex-direction: row;
-    margin: 0 12em;
+    margin: 0 12em 5em;
     gap: 1.5em;
     justify-content: center;
 }
@@ -80,6 +80,30 @@
     overflow: visible;
 }
 
+.condition-container:hover button.edit-condition {
+    visibility: visible;
+}
+
+.condition-title-and-edit {
+    display: flex;
+    flex-direction: row;
+    gap: .5em;
+}
+
+button.edit-condition {
+    background: none;
+    border: none;
+    color: grey;
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    visibility: hidden;
+}
+
+button.edit-condition:hover {
+    cursor: pointer;
+}
+
 .last-updated {
     text-align: end;
     font-weight: 200;
@@ -107,6 +131,25 @@
 table.vaccine-table th,
 table.vaccine-table td {
     padding: 0.1em .5em;
+}
+
+/* edit condition textarea */
+textarea {
+    font-family: var(--default-font-family);
+    font-size: 1em;
+    border: .15em solid var(--mantis-green);
+    border-radius: 1em;
+    padding: 0.25em .75em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    resize: none;
+    height: fit-content;
+}
+
+textarea:focus {
+    outline: .15em solid var(--brunswick-green);
 }
 
 /* mobile formatting */

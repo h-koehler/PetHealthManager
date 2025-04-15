@@ -1,5 +1,8 @@
+from datetime import datetime
+
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.defaultfilters import lower
+from django.contrib import messages
 from django.db.models import Q
 from .models import owner_user, vet_user, Pet, User, Condition, Vaccine, FeedItem
 
@@ -28,6 +31,26 @@ def home_view(request):
     else:
         return redirect("pets:login")
 
+def pet_popup(request): # pet popup from vet home
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+    if is_ajax:
+        if request.method == 'GET':
+            pet_id = request.GET.get('pet_id')
+            conditions = [{
+                'title': c.title,
+                'description': c.description,
+            } for c in Condition.objects.filter(pet_id=pet_id)]
+
+            vaccines = [{
+                'name': v.name,
+                'last_done': v.lastDone.strftime('%b %d, %Y') if v.lastDone else 'N/A',
+                'next_due': v.nextDue.strftime('%b %d, %Y') if v.nextDue else 'N/A'
+            } for v in Vaccine.objects.filter(pet_id=pet_id)]
+
+            return JsonResponse({
+                'conditions': conditions,
+                'vaccines': vaccines
+            })
 
 def pets_view(request):
     if not request.session.get('username'):
@@ -56,7 +79,6 @@ def pets_view(request):
                       "sort" : sort,
                   })
 
-
 def pet_details(request, pet_id):
     if request.session.get('username'):
         pet = get_object_or_404(Pet, id=pet_id)
@@ -80,7 +102,7 @@ def pet_create(request):
         return redirect('pets:home')
 
     if request.method == "POST":
-        # process form
+        # process the form
         # check if vet already exists in db
         pet_vet, created = User.objects.get_or_create(
             email=request.POST['vet-email'],  # find by email
@@ -95,11 +117,9 @@ def pet_create(request):
                 'role': 'v',
             }
         )
+        pet_vet.save()
 
-        if created:
-            pet_vet.save()
-
-        pet_pfp = request.FILES.get('pet-pfp')
+        pet_pfp = request.FILES.get('pet-pfp') # get pfp
 
         pet_name = request.POST.get('pet-name')
         pet_type = request.POST.get('pet-type')[0]
@@ -121,9 +141,10 @@ def pet_create(request):
             pfp=pet_pfp
         )
         new_pet.save()
-        new_pet.nonOwners.add(pet_vet)
+        new_pet.nonOwners.add(pet_vet) # set pet's vet as a nonOwner - allows vet to see pet's profile
 
         for key in request.POST:
+            # create conditions
             if key.startswith('condition-description-'):
                 con_id = key.split('condition-description-')[-1]
                 description = request.POST[key]
@@ -135,6 +156,7 @@ def pet_create(request):
                         title=title,
                         description=description,
                     )
+            # create vaccines
             if key.startswith('vac-name'):
                 vac_id = key.split('vac-name-')[-1]
                 name = request.POST[key]
@@ -148,6 +170,9 @@ def pet_create(request):
                         lastDone=last,
                         nextDue=due,
                     )
+
+        # SUCCESS message
+        messages.add_message(request, messages.SUCCESS, "%s has successfully been created" % new_pet.name)
 
         return redirect('pets:pet-details', pet_id=new_pet.id)
 
@@ -172,6 +197,7 @@ def pet_edit(request, pet_id):
                 pet.spayed = request.POST.get("pet-spay-status") == "true"
                 if "pet-pfp" in request.FILES:
                     pet.pfp = request.FILES.get('pet-pfp')
+                pet.save()
 
                 vet = pet.vet
 
@@ -204,15 +230,14 @@ def pet_edit(request, pet_id):
                     pet.save()
                     pet.nonOwners.add(new_vet)
 
-
-
+            # save conditions and vaccines
             pet.conditions.all().delete()
             for key in request.POST:
                 if key.startswith("condition-title-"):
                     index = key.split("-")[-1]
                     title = request.POST.get(f"condition-title-{index}")
                     desc = request.POST.get(f"condition-description-{index}")
-                    if title.strip():
+                    if title and desc:
                         Condition.objects.create(pet=pet, title=title, description=desc)
 
             pet.vaccines.all().delete()
@@ -225,12 +250,16 @@ def pet_edit(request, pet_id):
                     if name.strip():
                         Vaccine.objects.create(pet=pet, name=name, lastDone=last, nextDue=next)
 
+            pet.save(update_fields=['lastUpdated']) # make sure lastUpdated changes when only conditions / vaccines are changed
+
+            # INFO message
+            messages.add_message(request, messages.INFO,
+                                         "Changes to %s have successfully been saved" % pet.name)
+
             return redirect("pets:pet-details", pet_id=pet.id)
 
         if request.method == 'GET':
             if pet:
-                # return render(request,"pets/pets-list/edit.html",{ "pet" : pet})
-                # return error: page not found IF pet with specified id not found
                 conditions = Condition.objects.filter(pet_id=pet_id)
                 vaccines = Vaccine.objects.filter(pet_id=pet_id)
                 vet = get_object_or_404(User, id=pet.vet_id)
@@ -247,12 +276,35 @@ def pet_edit(request, pet_id):
     else:
         return redirect('pets:home')
 
+def pet_edit_condition(request):
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+    if is_ajax:
+        if request.method == 'GET':
+            condition_id = request.GET.get('condition_id')
+            condition = Condition.objects.get(id=condition_id)
+            return JsonResponse({
+                'id': condition.id,
+                'title': condition.title,
+                'description': condition.description
+            })
+        if request.method == 'POST':
+            condition_id = request.POST.get('condition_id')
+            condition = Condition.objects.get(id=condition_id)
+            new_description = request.POST.get('description')
+            condition.description = new_description
+            condition.save()
+            return JsonResponse({'description': condition.description})
+
 
 def pet_delete(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
     if request.method == 'POST':
         if pet.get_user_relation(get_object_or_404(User, username=request.session.get('username'))) == 'owner':
             pet.delete()
+            # deleted message
+            messages.add_message(request, messages.WARNING,
+                                 "%s has successfully been deleted" % pet.name)
+
             return redirect('pets:pets-list')
 
 

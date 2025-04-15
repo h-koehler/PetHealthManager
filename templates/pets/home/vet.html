@@ -6,6 +6,9 @@
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static "css/home-vet.css" %}">
 {% endblock %}
+{% block script %}
+    <script src="{% static "js/home-view-popup.js" %}"></script>
+{% endblock %}
 {% block content %}
     <div class="feed">
         <div class="sort-filter">
@@ -19,7 +22,8 @@
                     <p class="last-updated">Request made {{ feedItem.dateCreated |naturalday }}</p>
                 </div>
 
-                <a href="{% url "pets:pet-details" feedItem.pet.id %}" class="pet-card">
+                <a href="#" class="pet-card" data-pet-id="{{ feedItem.pet.id }}"
+                   data-ajax-url="{% url "pets:pet-popup" %}">
                     {% if feedItem.pet.pfp %}
                         <img class="pet-card-photo" src="{{ feedItem.pet.pfp.url }}"
                              alt="Image of {{ feedItem.pet.name }}">
@@ -31,19 +35,41 @@
                         <div>
                             <h2>{{ feedItem.pet.name }}</h2>
                             <p>
-                                {% if pet.type == "Dog" %}
+                                {% if feedItem.pet.type == "d" %}
                                     <i class="fa-solid fa-dog"></i>
-                                {% elif pet.type == "Cat" %}
+                                {% elif feedItem.pet.type == "c" %}
                                     <i class="fa-solid fa-cat"></i>
-                                {% elif pet.type == "Bird" %}
+                                {% elif feedItem.pet.type == "f" %}
+                                    <i class="fa-solid fa-fish"></i>
+                                {% elif feedItem.pet.type == "s" %}
+                                    <span class="icon-wrapper">
+                                        <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                                class="icon-svg"></object>
+                                    </span>
+                                {% elif feedItem.pet.type == "r" %}
+                                    <i class="fa-solid fa-worm"></i>
+                                {% elif feedItem.pet.type == "b" %}
                                     <i class="fa-solid fa-crow"></i>
                                 {% endif %}
                                 {{ feedItem.pet.breed }}</p>
-                            <p>{{ feedItem.pet.sex }}, {{ feedItem.pet.dob|get_age_from_dob }}</p>
+                            <p>{{ feedItem.pet.get_sex_display }}, {{ feedItem.pet.dob|get_age_from_dob }}</p>
                         </div>
                         <i>Last updated {{ feedItem.pet.lastUpdated|pretty_date }}</i>
                     </div>
                 </a>
+            </div>
+            <div class="popup-backdrop hidden" data-popup-id="{{ feedItem.pet.id }}">
+                <div class="popup-container hidden" data-popup-id="{{ feedItem.pet.id }}">
+                    <h2>{{ feedItem.pet.name }}'s Information</h2>
+                    <div>
+                        <h3>Conditions</h3>
+                        <ul class="conditions"></ul>
+                    </div>
+                    <div>
+                        <h3>Vaccines</h3>
+                        <ul class="vaccines"></ul>
+                    </div>
+                </div>
             </div>
         {% endfor %}
     </div>

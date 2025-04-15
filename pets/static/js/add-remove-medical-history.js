@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 `.next-div-${index}`
             );
 
-
             elementsToRemove.forEach(el => el.remove());
         })
     }

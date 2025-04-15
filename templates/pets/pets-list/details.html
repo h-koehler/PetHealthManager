@@ -5,8 +5,18 @@
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static "css/pet-details.css" %}">
 {% endblock %}
+{% block script %}
+    <script src="{% static "js/edit-condition.js" %}"></script>
+{% endblock %}
 {% block content %}
     <div class="pet-details-container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <div class="sidebar">
             <!-- nonfunctional buttons -->
             <button class="primary-button active">Pet Profile</button>
@@ -17,7 +27,6 @@
         <div class="details-container">
             <div class="top-card">
                 <div class="summary-details">
-
                     {% if pet.pfp %}
                         <img class="pet-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
                     {% else %}
@@ -26,14 +35,25 @@
                     {% endif %}
                     <div class="summary-info">
                         <h2>{{ pet.name }}</h2>
-                        <p><b>Type/Breed:</b>
+                        <p>
+                            <b>Type/Breed:</b>
                             {% if pet.type == "d" %}
                                 <i class="fa-solid fa-dog"></i>
                             {% elif pet.type == "c" %}
                                 <i class="fa-solid fa-cat"></i>
+                            {% elif pet.type == "f" %}
+                                <i class="fa-solid fa-fish"></i>
+                            {% elif pet.type == "s" %}
+                                <span class="icon-wrapper">
+                                    <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                            class="icon-svg"></object>
+                                </span>
+                            {% elif pet.type == "r" %}
+                                <i class="fa-solid fa-worm"></i>
                             {% elif pet.type == "b" %}
                                 <i class="fa-solid fa-crow"></i>
-                            {% endif %} {{ pet.breed }}</p>
+                            {% endif %}
+                            {{ pet.breed }} </p>
                         <p><b>Sex:</b> {{ pet.get_sex_display }}</p>
                         <p><b>Age:</b> {{ pet.dob|get_age_from_dob }} ({{ pet.dob|pretty_date }})</p>
                         <p><b>Weight:</b> {{ pet.weight }} lbs</p>
@@ -73,33 +93,42 @@
             </div>
             <div class="condition-details">
                 {% for condition in conditions %}
-                    <div class={{ condition.title }}>
-                        <h3>{{ condition.title }} <i class="fa-solid fa-chevron-down"></i></h3>
+                    <div class="condition-container" data-container-id="{{ condition.id }}">
+                        <div class="condition-title-and-edit">
+                            <h3>{{ condition.title }}</h3>
+                            <button 
+                                    class="edit-condition" 
+                                    data-condition-id="{{ condition.id }}" 
+                                    data-ajax-url="{% url "pets:pet-edit_condition" %}">
+                                <i class="fa-solid fa-pen-to-square 2x"></i>
+                            </button>
+                        </div>
                         <p>{{ condition.description }}</p>
                     </div>
                 {% endfor %}
             </div>
-            <div class="vaccines">
-                <h3>Vaccinations <i class="fa-solid fa-chevron-down"></i></h3>
-                <table class="vaccine-table">
-                    <tr>
-                        <th>Vaccine</th>
-                        <th>Last done</th>
-                        <th>Next due</th>
-                    </tr>
-                    {% for vac in vaccines %}
+            {% if vaccines|length != 0 %}
+                <div class="vaccines">
+                    <h3>Vaccinations <i class="fa-solid fa-chevron-down"></i></h3>
+                    <table class="vaccine-table">
                         <tr>
-                            <td>{{ vac.name }}</td>
-                            <td>{{ vac.lastDone|pretty_date }}</td>
-                            <td>{{ vac.nextDue|pretty_date }}</td>
+                            <th>Vaccine</th>
+                            <th>Last done</th>
+                            <th>Next due</th>
                         </tr>
-                    {% endfor %}
-                </table>
-            </div>
+                        {% for vac in vaccines %}
+                            <tr>
+                                <td>{{ vac.name }}</td>
+                                <td>{{ vac.lastDone|pretty_date }}</td>
+                                <td>{{ vac.nextDue|pretty_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %}
             <div class="last-updated">
-                <p>Last updated: {{ pet.lastUpdated|pretty_date }}</p>
+                <p>Last updated: {{ pet.lastUpdated|pretty_date_time }}</p>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}

@@ -1,3 +1,5 @@
+// dropdown for mobile view
+
 function showDropdown() {
     document.getElementById("dropdown").classList.toggle("show")
 }

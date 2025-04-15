@@ -150,6 +150,17 @@ header img {
     font-size: 1.25em;
 }
 
+.icon-wrapper {
+    display: inline-flex;
+}
+
+.icon-svg {
+    height: 1.1em;
+    width: 1.1em;
+    align-self: center;
+}
+
+
 /* NAV-DROPDOWN - MOBILE */
 .nav-dropdown {
     display: none;
@@ -213,6 +224,36 @@ header img {
 
 .show {
     display: block;
+}
+
+/* messages */
+ul.messages {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    list-style: none;
+}
+
+ul.messages li {
+    background: lightgray;
+    padding: 1em 1.5em;
+    border-radius: .5em;
+    border: grey .25em solid
+}
+
+ul.messages li.success {
+    background: var(--pale-green);
+    border-color: var(--pine-green);
+}
+
+ul.messages li.info {
+    background: #c5deea;
+    border-color: #123575;
+}
+
+ul.messages li.warning {
+    background: #f1b0b0;
+    border-color: darkred;
 }
 
 /* mobile formatting - switch from nav-bar to nav-dropdown */
@@ -304,7 +345,8 @@ footer {
     justify-content: center;
     align-items: center;
     text-align: center;
-    border-radius: 2em;
+    border-radius: 1em;
+    border: var(--brunswick-green) .25em solid;
 }
 
 .logout-buttons {

@@ -41,17 +41,25 @@
                                     <div>
                                         <h2>{{ pet.name }}</h2>
                                         <p>
-                                            {% if pet.type == "Dog" %}
+                                            {% if pet.type == "d" %}
                                                 <i class="fa-solid fa-dog"></i>
-                                            {% elif pet.type == "Cat" %}
+                                            {% elif pet.type == "c" %}
                                                 <i class="fa-solid fa-cat"></i>
-                                            {% elif pet.type == "Bird" %}
+                                            {% elif pet.type == "f" %}
+                                                <i class="fa-solid fa-fish"></i>
+                                            {% elif pet.type == "s" %}
+                                                <span class="icon-wrapper">
+                                                    <object type="image/svg+xml" data="{% static 'img/small.svg' %}" class="icon-svg"></object>
+                                                </span>
+                                            {% elif pet.type == "r" %}
+                                                <i class="fa-solid fa-worm"></i>
+                                            {% elif pet.type == "b" %}
                                                 <i class="fa-solid fa-crow"></i>
                                             {% endif %}
                                             {{ pet.breed }}</p>
-                                        <p>{{ pet.sex }}, {{ pet.dob|get_age_from_dob }}</p>
+                                        <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
-                                    <i>Last updated {{ pet.lastUpdated }}</i>
+                                    <i>Last updated {{ pet.lastUpdated | pretty_date}}</i>
                                 </div>
                             </a>
                         {% endfor %}

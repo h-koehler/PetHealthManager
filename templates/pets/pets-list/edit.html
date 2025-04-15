@@ -260,14 +260,14 @@
                     <div class="form-textarea condition-{{ condition.id }}">
                         <div class="condition-title-and-delete">
                             <div>
-                                <input type="text" id="condition-title-{{ condition.id }}" placeholder="Title" value="{{ condition.title }}"/>
-                                <span id="condition-title-error" class="error-message"></span>
+                                <input type="text" id="condition-title-{{ condition.id }}" placeholder="Title" value="{{ condition.title }}" name="condition-title-{{ condition.id }}"/>
+{#                                <span id="condition-title-error" class="error-message"></span>#}
                             </div>
                             <button type="button" id="delete-condition-{{ condition.id }}" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
-                        <textarea id="condition-description-{{ condition.id }}" placeholder="Description">{{ condition.description }}</textarea>
-                        <span id="condition-error-{{ condition.id }}" class="error-message"></span>
+                        <textarea id="condition-description-{{ condition.id }}" placeholder="Description" name="condition-description-{{ condition.id }}">{{ condition.description }}</textarea>
+{#                        <span id="condition-error-{{ condition.id }}" class="error-message"></span>#}
                     </div>
                 {% endfor %}
                 </div>

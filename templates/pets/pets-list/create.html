@@ -12,8 +12,6 @@
 {% block content %}
     <h2 class="title">Create Pet Profile</h2>
     <div class="create-pet-container">
-
-        {#    once fully implemented, this will redirect to the pet details view of the pet that was just created#}
         <form id="create-pet-form" method="POST" action="{% url "pets:pet-create" %}" enctype="multipart/form-data">
             <div class="required-note"><span class="required">*</span> = Required</div>
             {% csrf_token %}
@@ -261,27 +259,7 @@
                         <label for="vac-delete" class="individual-vac-label vac-delete">Delete</label>
                         <button id="vac-delete" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
-
-{#                    <label for="vac-name-1" class="individual-vac-label">Vaccine</label>#}
-{#                    <div class="form-input">#}
-{#                        <input type="text" id="vac-name-1" name="vac-name">#}
-{#                        <span id="vac-name-error-1" class="error-message"></span>#}
-{#                    </div>#}
-{##}
-{#                    <label for="last-done-1" class="individual-vac-label">Last done</label>#}
-{#                    <div class="form-input">#}
-{#                        <input type="date" id="last-done-1" name="last-done-1">#}
-{#                        <span id="last-done-error-1" class="error-message"></span>#}
-{#                    </div>#}
-{##}
-{#                    <label for="next-due-1" class="individual-vac-label">Next due</label>#}
-{#                    <div class="form-input">#}
-{#                        <input type="date" id="next-due-1" name="next-due-1">#}
-{#                        <span id="next-due-error-1" class="error-message"></span>#}
-{#                    </div>#}
-{##}
-{#                    <label for="vac-delete-1" class="individual-vac-label">Delete</label>#}
-{#                    <button id="vac-delete-1" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i></button>#}
+                    
                 </div>
                 <button type="button" id="add-vaccine" class="secondary-button">+ Add Vaccine</button>
             </div>
@@ -290,7 +268,6 @@
                 <input type="file" id="pet-files" name="pet-files" accept=".pdf" class="hidden" multiple>
                 <label for="pet-files">Upload Files</label>
             </div>
-            {#            <input type="hidden" name="owner" value="{{ request.session.username }}">#}
             <button type="submit" class="primary-button submit-button">Create Pet</button>
             <div id="form-submitted" class="display-none">Pet Created!</div>
         </form>

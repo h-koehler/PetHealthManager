@@ -1,6 +1,7 @@
 import re
 from django import template
-from datetime import datetime, timedelta
+from datetime import datetime
+from django.utils import timezone
 
 register = template.Library()
 
@@ -23,6 +24,11 @@ def get_age_from_dob(dob):
 @register.filter
 def pretty_date(dob):
     return dob.strftime("%b %d, %Y")
+
+@register.filter
+def pretty_date_time(dob):
+    local_time = timezone.localtime(dob)
+    return local_time.strftime("%b %d, %Y at %I:%M %p").lstrip("0")
 
 @register.filter
 def get_elapsed_time(date):
