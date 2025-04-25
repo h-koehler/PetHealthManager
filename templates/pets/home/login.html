@@ -8,7 +8,7 @@
 {% block content %}
     <div class="login-window">
         <h2>Login</h2>
-        <form id="login-box" action="{% url "pets:login" %}" method="POST">
+        <form id="login-box" action="{% url "users:login" %}" method="POST">
             {% csrf_token %}
             <div>
                 <label for="username">Username:</label>
@@ -19,7 +19,7 @@
                 <input type="password" id="password" name="password">
             </div>
             <input type="submit" class="secondary-button" name="submit" value="Login">
-            <a href="#">Create an account</a>
+            <a href="{% url "users:register-select" %}">Create an account</a>
         </form>
     </div>
 {% endblock %}

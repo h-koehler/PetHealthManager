@@ -1,0 +1,61 @@
+{% extends "pets/base.html" %}
+{% load pets_tags %}
+{% load static %}
+{% block page-title %}Profile for {{ user.username }}{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/profile.css" %}">
+{% endblock %}
+{% block script %}
+    {#    <script src="{% static "js/edit-condition.js" %}"></script>#}
+{% endblock %}
+{% block content %}
+    <div class="profile-container">
+        <div class="sidebar">
+            <!-- nonfunctional buttons -->
+            <button class="primary-button active">Profile</button>
+            <button class="primary-button">Pets</button>
+        </div>
+        <div class="details-container">
+            <div class="pfp">
+                {% if user.pfp %}
+                    <img class="user-photo" src="{{ user.pfp.url }}" alt="Image of {{ user.username }}">
+                {% else %}
+                    <img class="user-photo" src="{% static 'img/default-pfp.jpg' %}"
+                         alt="Default user profile image">
+                {% endif %}
+            </div>
+            <div class="summary-info">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <p>
+                    {% if user.details.city %}
+                        <i>{{ user.details.city }}, {{ user.details.state }}</i>
+                    {% else %}
+                        <i>{{ user.details.state }}</i>
+                    {% endif %}
+                    {% if user.details.role == 'v' %}
+                        <span> | Vet</span>
+                    {% endif %}
+                </p>
+                <p><b>Username:</b> {{ user.username }} </p>
+                <p><b>Email:</b> {{ user.email }}</p>
+                <p><b>Phone:</b> {{ user.details.phone | pretty_phone_number }}</p>
+                {% if user.details.role == 'v' %}
+                    <p><b>Clinic Name:</b> {{ user.details.clinic_name }}</p>
+                    {% endif %}
+            </div>
+            <div class="row">
+                {% if user.username == request.session.username or request.session.role == 'a' %}
+                    <a class="secondary-button" href="{% url 'users:edit' user.username %}">Edit <i
+                            class="fa-solid fa-pencil"></i></a>
+                {% endif %}
+                {% if user.username != request.session.username %}
+                    <a class="secondary-button">Message <i
+                            class="fa-solid fa-comment-medical"></i></a>
+                    <a class="secondary-button">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                {% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

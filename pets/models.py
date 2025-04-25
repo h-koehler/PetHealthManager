@@ -1,9 +1,9 @@
 import os
-from enum import Enum
-from datetime import datetime, timedelta
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.conf import settings
+from users.models import Vet
 
 # Create your models here.
 
@@ -48,17 +48,17 @@ class Pet(models.Model):
     dob = models.DateTimeField()
     weight = models.FloatField()
     spayed = models.BooleanField(default=False)
-    vet = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True, related_name='pets_as_vet')
-    owner = models.ForeignKey('User', on_delete=models.CASCADE, related_name='pets_as_owner')
-    lastUpdated = models.DateTimeField(auto_now=True)
-    nonOwners = models.ManyToManyField('User', related_name='pets_as_sitters', blank=True)
+    vet = models.ForeignKey(Vet, on_delete=models.SET_NULL, null=True, blank=True, related_name='pets_vet')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='pets_owner')
+    last_updated = models.DateTimeField(auto_now=True)
+    non_owners = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='authorized_users', blank=True)
 
     def get_user_relation(self, user):
         if self.owner == user:
             return 'owner'
         elif self.vet == user:
             return 'vet'
-        elif user in self.nonOwners.all():
+        elif user in self.non_owners.all():
             return 'sitter'
         return 'unauthorized'
 
@@ -77,30 +77,6 @@ class Pet(models.Model):
 def delete_pet_pfp_file(sender, instance, **kwargs):
     _delete_old_file(instance.pfp)
 
-class User(models.Model):
-    VET = "v"
-    OWNER = "o"
-    SITTER = "s"
-    USER_ROLES = [
-        (VET, "vet"),
-        (OWNER, "owner"),
-        (SITTER, "sitter"),
-    ]
-    role = models.CharField(
-        max_length=1,
-        choices=USER_ROLES,
-        default=OWNER
-    )
-    firstName = models.CharField(max_length=30)
-    lastName = models.CharField(max_length=30)
-    phone = models.CharField(max_length=11) # possibly change to phoneNumber?
-    email = models.EmailField(unique=True)
-    address = models.CharField(max_length=30)
-    city = models.CharField(max_length=30) # possibly utilize localflavor?
-    state = models.CharField(max_length=30)
-    zipCode = models.CharField(max_length=30)
-    username = models.CharField(max_length=30, null=True, blank=True, unique=True)
-
 class Condition(models.Model):
     pet = models.ForeignKey('Pet', on_delete=models.CASCADE, related_name='conditions')
     title = models.CharField(max_length=30)
@@ -109,8 +85,8 @@ class Condition(models.Model):
 class Vaccine(models.Model):
     pet = models.ForeignKey('Pet', on_delete=models.CASCADE, related_name='vaccines')
     name = models.CharField(max_length=30)
-    lastDone = models.DateTimeField()
-    nextDue = models.DateTimeField()
+    last_done = models.DateTimeField()
+    next_due = models.DateTimeField()
 
 class FeedItem(models.Model):
     GENERAL = "gen"
@@ -122,11 +98,8 @@ class FeedItem(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     pet = models.ForeignKey('Pet', on_delete=models.CASCADE, related_name='feed_items')
-    created_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True, related_name='feed_items_created_by')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='feed_items_created_by')
     feed_type = models.CharField(max_length=3, choices=FEED_TYPE_CHOICES, default=GENERAL)
     # comments
-    dateCreated = models.DateTimeField(auto_now_add=True)
-    isSolved = models.BooleanField(default=False)
-
-owner_user = {"username": "john", "password": "owner"}
-vet_user = {"username": "jane", "password": "vet"}
+    date_created = models.DateTimeField(auto_now_add=True)
+    is_solved = models.BooleanField(default=False)

@@ -1,0 +1,191 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% block page-title %}Register User{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/register-user.css" %}">
+{% endblock %}
+{% block script %}
+        <script src="{% static "js/register-form-validation.js" %}"></script>
+    {#    <script src="{% static "js/add-remove-medical-history.js" %}"></script>#}
+    {#    <script src="{% static "js/display-filename-oncreate.js" %}"></script>#}
+{% endblock %}
+{% block content %}
+    <h2 class="title">Register User</h2>
+    <div class="required-note"><span class="required">*</span> = Required</div>
+    <div class="register-user-container">
+        <form id="create-user-form" method="POST" action="{% url 'users:register' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if role == 'vet' %}
+                <input type="hidden" id='role' name="role" value="v">
+            {% else %}
+                <input type="hidden" id='role' name="role" value="o">
+            {% endif %}
+            <div class="form-section">
+                <!-- required -->
+                <div class="form-input">
+                    <label for="register-fname">First Name<span class="required">*</span></label>
+                    <input type="text" id="register-fname" name="fname" value="{{ user.first_name }}"required>
+                    <span id="register-fname-error" class="error-message"></span>
+                </div>
+                <div class="form-input">
+                    <label for="register-lname">Last Name<span class="required">*</span></label>
+                    <input type="text" id="register-lname" name="lname" value="{{ user.last_name }}"required>
+                    <span id="register-lname-error" class="error-message"></span>
+                </div>
+                <div class="form-input">
+                    <label for="register-phone">Phone Number<span class="required">*</span></label>
+                    <input type="number" id="register-phone" name="phone" value="{{ user.details.phone }}"required>
+                    <span id="register-phone-error" class="error-message"></span>
+                </div>
+                <div class="form-input">
+                    <label for="register-email">Email<span class="required">*</span></label>
+                    <input type="email" id="register-email" name="email" value="{{ user.email }}" required>
+                    <span id="register-email-error" class="error-message"></span>
+                </div>
+            </div>
+            <div class="form-section">
+                {% if user.details.role == 'v' %}
+                    <div class="form-input">
+                        <label for="register-clinic">Clinic Name<span class="required">*</span></label>
+                        <input type="text" id="register-clinic" name="clinic" value="{{ user.details.clinic_name }}" required>
+                        <span id="register-clinic-error" class="error-message"></span>
+                    </div>
+                {% endif %}
+                <div class="form-input">
+                    <label for="register-address">Address{% if user.details.role == 'v' %}<span class="required">*</span>{% endif %}</label>
+                    <input type="text" id="register-address" name="address" value="{{ user.details.address }}">
+                    <span id="register-address-error" class="error-message"></span>
+                </div>
+                <div class="form-input">
+                    <label for="register-city">City{% if user.details.role == 'v' %}<span class="required">*</span>{% endif %}</label>
+                    <input type="text" id="register-city" name="city" value="{{ user.details.city }}">
+                    <span id="register-city-error" class="error-message"></span>
+                </div>
+
+                <div class="form-input">
+                <label for="register-state">State<span class="required">*</span></label>
+                            <select id="register-state" name="state" required>
+                                <option value="" disabled {% if not vet.state %}selected{% endif %}>Select</option>
+                                    <option value="AL" {% if user.details.state == "AL" %}selected{% endif %}>Alabama</option>
+                                    <option value="AK" {% if user.details.state == "AK" %}selected{% endif %}>Alaska</option>
+                                    <option value="AZ" {% if user.details.state == "AZ" %}selected{% endif %}>Arizona</option>
+                                    <option value="AR" {% if user.details.state == "AR" %}selected{% endif %}>Arkansas</option>
+                                    <option value="AS" {% if user.details.state == "AS" %}selected{% endif %}>American Samoa
+                                    </option>
+                                    <option value="CA" {% if user.details.state == "CA" %}selected{% endif %}>California</option>
+                                    <option value="CO" {% if user.details.state == "CO" %}selected{% endif %}>Colorado</option>
+                                    <option value="CT" {% if user.details.state == "CT" %}selected{% endif %}>Connecticut
+                                    </option>
+                                    <option value="DE" {% if user.details.state == "DE" %}selected{% endif %}>Delaware</option>
+                                    <option value="DC" {% if user.details.state == "DC" %}selected{% endif %}>District of
+                                        Columbia
+                                    </option>
+                                    <option value="FL" {% if user.details.state == "FL" %}selected{% endif %}>Florida</option>
+                                    <option value="GA" {% if user.details.state == "GA" %}selected{% endif %}>Georgia</option>
+                                    <option value="GU" {% if user.details.state == "GU" %}selected{% endif %}>Guam</option>
+                                    <option value="HI" {% if user.details.state == "HI" %}selected{% endif %}>Hawaii</option>
+                                    <option value="ID" {% if user.details.state == "ID" %}selected{% endif %}>Idaho</option>
+                                    <option value="IL" {% if user.details.state == "IL" %}selected{% endif %}>Illinois</option>
+                                    <option value="IN" {% if user.details.state == "IN" %}selected{% endif %}>Indiana</option>
+                                    <option value="IA" {% if user.details.state == "IA" %}selected{% endif %}>Iowa</option>
+                                    <option value="KS" {% if user.details.state == "KS" %}selected{% endif %}>Kansas</option>
+                                    <option value="KY" {% if user.details.state == "KY" %}selected{% endif %}>Kentucky</option>
+                                    <option value="LA" {% if user.details.state == "LA" %}selected{% endif %}>Louisiana</option>
+                                    <option value="ME" {% if user.details.state == "ME" %}selected{% endif %}>Maine</option>
+                                    <option value="MD" {% if user.details.state == "MD" %}selected{% endif %}>Maryland</option>
+                                    <option value="MA" {% if user.details.state == "MA" %}selected{% endif %}>Massachusetts
+                                    </option>
+                                    <option value="MI" {% if user.details.state == "MI" %}selected{% endif %}>Michigan</option>
+                                    <option value="MN" {% if user.details.state == "MN" %}selected{% endif %}>Minnesota</option>
+                                    <option value="MS" {% if user.details.state == "MS" %}selected{% endif %}>Mississippi
+                                    </option>
+                                    <option value="MO" {% if user.details.state == "MO" %}selected{% endif %}>Missouri</option>
+                                    <option value="MT" {% if user.details.state == "MT" %}selected{% endif %}>Montana</option>
+                                    <option value="NE" {% if user.details.state == "NE" %}selected{% endif %}>Nebraska</option>
+                                    <option value="NV" {% if user.details.state == "NV" %}selected{% endif %}>Nevada</option>
+                                    <option value="NH" {% if user.details.state == "NH" %}selected{% endif %}>New Hampshire
+                                    </option>
+                                    <option value="NJ" {% if user.details.state == "NJ" %}selected{% endif %}>New Jersey</option>
+                                    <option value="NM" {% if user.details.state == "NM" %}selected{% endif %}>New Mexico</option>
+                                    <option value="NY" {% if user.details.state == "NY" %}selected{% endif %}>New York</option>
+                                    <option value="NC" {% if user.details.state == "NC" %}selected{% endif %}>North Carolina
+                                    </option>
+                                    <option value="ND" {% if user.details.state == "ND" %}selected{% endif %}>North Dakota
+                                    </option>
+                                    <option value="MP" {% if user.details.state == "MP" %}selected{% endif %}>Northern Mariana
+                                        Islands
+                                    </option>
+                                    <option value="OH" {% if user.details.state == "OH" %}selected{% endif %}>Ohio</option>
+                                    <option value="OK" {% if user.details.state == "OK" %}selected{% endif %}>Oklahoma</option>
+                                    <option value="OR" {% if user.details.state == "OR" %}selected{% endif %}>Oregon</option>
+                                    <option value="PA" {% if user.details.state == "PA" %}selected{% endif %}>Pennsylvania
+                                    </option>
+                                    <option value="PR" {% if user.details.state == "PR" %}selected{% endif %}>Puerto Rico
+                                    </option>
+                                    <option value="RI" {% if user.details.state == "RI" %}selected{% endif %}>Rhode Island
+                                    </option>
+                                    <option value="SC" {% if user.details.state == "SC" %}selected{% endif %}>South Carolina
+                                    </option>
+                                    <option value="SD" {% if user.details.state == "SD" %}selected{% endif %}>South Dakota
+                                    </option>
+                                    <option value="TN" {% if user.details.state == "TN" %}selected{% endif %}>Tennessee</option>
+                                    <option value="TX" {% if user.details.state == "TX" %}selected{% endif %}>Texas</option>
+                                    <option value="TT" {% if user.details.state == "TT" %}selected{% endif %}>Trust Territories
+                                    </option>
+                                    <option value="UT" {% if user.details.state == "UT" %}selected{% endif %}>Utah</option>
+                                    <option value="VT" {% if user.details.state == "VT" %}selected{% endif %}>Vermont</option>
+                                    <option value="VA" {% if user.details.state == "VA" %}selected{% endif %}>Virginia</option>
+                                    <option value="VI" {% if user.details.state == "VI" %}selected{% endif %}>Virgin Islands
+                                    </option>
+                                    <option value="WA" {% if user.details.state == "WA" %}selected{% endif %}>Washington</option>
+                                    <option value="WV" {% if user.details.state == "WV" %}selected{% endif %}>West Virginia
+                                    </option>
+                                    <option value="WI" {% if user.details.state == "WI" %}selected{% endif %}>Wisconsin</option>
+                                    <option value="WY" {% if user.details.state == "WY" %}selected{% endif %}>Wyoming</option>
+                            </select>
+                            <span id="register-state-error" class="error-message"></span>
+                        </div>
+
+                <div class="form-input">
+                        <label for="register-zip">Zip / Postal Code{% if user.details.role == 'vet' %}<span class="required">*</span>{% endif %}</label>
+                            <input type="text" id="register-zip" name="zip" value="{{ user.details.zip_code }}">
+                            <span id="register-zip-error" class="error-message"></span>
+                        </div>
+            </div>
+            <div class="form-section">
+                <div class="form-input">
+                    <label for="register-username">Username<span class="required">*</span></label>
+                    <input type="text" id="register-username" name="username" value="{{ user.username }}" disabled>
+                    <span id="register-username-error" class="error-message"></span>
+                </div>
+            </div>
+            <div class="form-section">
+                <h3>Change password</h3>
+                <div class="form-input">
+                    <label for="old-password">Old Password</label>
+                    <input type="password" id="old-password" name="password">
+                    <span id="old-password-error" class="error-message"></span>
+                </div>
+                <div class="form-input">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" name="password">
+                    <span id="new-password-error" class="error-message"></span>
+                </div>
+                <div id="password-message">
+                    <div>Password must contain:</div>
+                    <p class="password-message-item invalid">At least 1 lowercase letter</p>
+                    <p class="password-message-item invalid">At least 1 uppercase letter</p>
+                    <p class="password-message-item invalid">At least 1 number</p>
+                    <p class="password-message-item invalid">At least 1 special character</p>
+                    <p class="password-message-item invalid">At least 8 characters</p>
+                </div>
+                <div class="form-input">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password">
+                    <span id="confirm-password-error" class="error-message"></span>
+                </div>
+            </div>
+            <button type="submit" class="primary-button submit-button">Save Changes</button>
+        </form>
+    </div>
+{% endblock %}

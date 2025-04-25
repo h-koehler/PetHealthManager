@@ -13,44 +13,35 @@
 {% endblock %}
 {% block content %}
     <div class="pet-list-container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        <div class="pets-list-filter">
+            {% if request.session.role == 'o' %}
+                <a class="primary-button" href="{% url "pets:pet-create" %}"><i class="fa-solid fa-plus"></i> New
+                    Pet</a>
+            {% else %}
+                <div></div>
+            {% endif %}
+            <form method="GET" id="sort-form" class="filter-dropdown">
+                <span>Sort By: </span>
+                <select name="sort" id="sort" onchange="document.getElementById('sort-form').submit()">
+                    <option value="updated" {% if sort == "updated" %}selected{% endif %}>Last Updated</option>
+                    <option value="name" {% if sort == "name" %}selected{% endif %}>Alphabetical (A-Z)</option>
+                    <option value="dob-ascending" {% if sort == "dob-ascending" %}selected{% endif %}>Age
+                        (Ascending)
+                    </option>
+                    <option value="dob-descending" {% if sort == "dob-descending" %}selected{% endif %}>Age
+                        (Descending)
+                    </option>
+                </select>
+            </form>
+        </div>
         {% if pets|length == 0 and clients|length == 0 %}
             <div class="empty-pet-list">
                 <p>Sorry! There are no pets to display at the moment.</p>
-                <!-- https://unsplash.com/photos/a-close-up-of-a-cat-with-green-eyes-FntgSXIlSwM -->
-                <img class="empty-list-img" src="{% static "img/empty-list.jpg" %}"
-                     alt="Image of a cat looking sad">
+                {#                https://unsplash.com/photos/a-close-up-of-a-cat-with-green-eyes-FntgSXIlSwM#}
+                <img class="empty-list-img" src="{% static "img/empty-list.jpg" %}" alt="Image of a cat looking sad">
             </div>
         {% else %}
-
-            <div class="pets-list-filter">
-                {% if request.session.role == 'owner' %}
-                    <a class="primary-button" href="{% url "pets:pet-create" %}"><i class="fa-solid fa-plus"></i> New
-                        Pet</a>
-                {% else %}
-                    <div></div>
-                {% endif %}
-                <form method="GET" id="sort-form" class="filter-dropdown">
-                    <span>Sort By: </span>
-                    <select name="sort" id="sort" onchange="document.getElementById('sort-form').submit()">
-                        <option value="updated" {% if sort == "updated" %}selected{% endif %}>Last Updated</option>
-                        <option value="name" {% if sort == "name" %}selected{% endif %}>Alphabetical (A-Z)</option>
-                        <option value="dob-ascending" {% if sort == "dob-ascending" %}selected{% endif %}>Age
-                            (Ascending)
-                        </option>
-                        <option value="dob-descending" {% if sort == "dob-descending" %}selected{% endif %}>Age
-                            (Descending)
-                        </option>
-                    </select>
-                </form>
-            </div>
-            {% if request.session.role == 'vet' %}
+            {% if request.session.role == 'v' %}
                 <div class="pets-section">
                     <h2>Clients' Pets</h2>
                     <div class="pets-list">
@@ -74,8 +65,8 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                    <img src="{% static 'img/small.svg' %}" class="icon-svg">
-                                                </span>
+                                                        <img src="{% static 'img/small.svg' %}" class="icon-svg">
+                                                    </span>
                                             {% elif pet.type == "r" %}
                                                 <i class="fa-solid fa-worm"></i>
                                             {% elif pet.type == "b" %}
@@ -115,9 +106,9 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                    <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
-                                                            class="icon-svg"></object>
-                                                </span>
+                                                        <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                                                class="icon-svg"></object>
+                                                    </span>
                                             {% elif pet.type == "r" %}
                                                 <i class="fa-solid fa-worm"></i>
                                             {% elif pet.type == "b" %}
@@ -155,9 +146,9 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                    <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
-                                                            class="icon-svg"></object>
-                                                </span>
+                                                        <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                                                class="icon-svg"></object>
+                                                    </span>
                                             {% elif pet.type == "r" %}
                                                 <i class="fa-solid fa-worm"></i>
                                             {% elif pet.type == "b" %}

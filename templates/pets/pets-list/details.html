@@ -10,13 +10,6 @@
 {% endblock %}
 {% block content %}
     <div class="pet-details-container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
         <div class="sidebar">
             <!-- nonfunctional buttons -->
             <button class="primary-button active">Pet Profile</button>
@@ -127,7 +120,7 @@
                 </div>
             {% endif %}
             <div class="last-updated">
-                <p>Last updated: {{ pet.lastUpdated|pretty_date_time }}</p>
+                <p>Last updated: {{ pet.last_updated|pretty_date_time }}</p>
             </div>
         </div>
     </div>

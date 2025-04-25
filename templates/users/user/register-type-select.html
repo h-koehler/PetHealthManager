@@ -1,0 +1,18 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% block page-title %}Register User{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/register-user.css" %}">
+{% endblock %}
+{% block script %}
+    {#    <script src="{% static "js/register-form-validation.js" %}"></script>#}
+    {#    <script src="{% static "js/add-remove-medical-history.js" %}"></script>#}
+    {#    <script src="{% static "js/display-filename-oncreate.js" %}"></script>#}
+{% endblock %}
+{% block content %}
+    <h2 class="title">Are you a...</h2>
+    <div class="types-container">
+    <a class="register-type-button" href="{% url 'users:register' %}?role=owner">Pet Owner / Sitter</a>
+    <a class="register-type-button" href="{% url 'users:register' %}?role=vet">Veterinarian</a>
+    </div>
+{% endblock %}

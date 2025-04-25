@@ -3,33 +3,42 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.db.models import Q
-from .models import owner_user, vet_user, Pet, User, Condition, Vaccine, FeedItem
+
+from users.models import Vet
+from .models import Pet, Condition, Vaccine, FeedItem
 
 
 # Create your views here.
 
 def home_view(request):
     role = request.session.get('role')
-    if role == 'vet':
+    if role == 'v':
         vet_feed = FeedItem.objects.filter(
             feed_type='inq',
-            isSolved=False,
-        ).order_by('-dateCreated')
+            is_solved=False,
+        ).order_by('-date_created')
         return render(request,
                       'pets/home/vet.html',
                       {"feed": vet_feed}
                       )
-    elif role == 'owner':
+    elif role == 'o':
         username = request.session.get('username')
+        # print("Session username:", username)
+
         user = get_object_or_404(User, username=username)
-        owner_feed = FeedItem.objects.filter(Q(pet__owner=user) | Q(pet__nonOwners=user), feed_type="gen").order_by('-dateCreated')
+        # print("User object:", user, type(user))
+
+        owner_feed = FeedItem.objects.filter(Q(pet__owner=user) | Q(pet__non_owners=user), feed_type="gen").order_by('-date_created')
         return render(request,
                       "pets/home/owner.html",
                       {"feed": owner_feed}
                       )
+    elif role == 'a':
+        return redirect('users:profile', request.session.get('username'))
     else:
-        return redirect("pets:login")
+        return redirect("users:login")
 
 def pet_popup(request): # pet popup from vet home
     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
@@ -43,8 +52,8 @@ def pet_popup(request): # pet popup from vet home
 
             vaccines = [{
                 'name': v.name,
-                'last_done': v.lastDone.strftime('%b %d, %Y') if v.lastDone else 'N/A',
-                'next_due': v.nextDue.strftime('%b %d, %Y') if v.nextDue else 'N/A'
+                'last_done': v.last_done.strftime('%b %d, %Y') if v.last_done else 'N/A',
+                'next_due': v.next_due.strftime('%b %d, %Y') if v.next_due else 'N/A'
             } for v in Vaccine.objects.filter(pet_id=pet_id)]
 
             return JsonResponse({
@@ -61,16 +70,16 @@ def pets_view(request):
     sort = request.GET.get('sort', 'updated')
 
     sort_map = {
-        'updated' : '-lastUpdated',
+        'updated' : '-last_updated',
         'name' : 'name',
         'dob-ascending' : '-dob',
         'dob-descending' : 'dob',
     }
-    order_by = sort_map.get(sort, '-lastUpdated')
+    order_by = sort_map.get(sort, '-last_updated')
     pets = None
-    if request.session.get('role') == 'owner':
+    if request.session.get('role') == 'o':
         pets = Pet.objects.filter(Q(owner=user)).order_by(order_by)
-    clients = Pet.objects.filter(Q(nonOwners=user)).order_by(order_by)
+    clients = Pet.objects.filter(Q(non_owners=user)).order_by(order_by)
     return render(request,
                   "pets/pets-list/list.html",
                   {
@@ -98,50 +107,44 @@ def pet_details(request, pet_id):
 
 
 def pet_create(request):
-    if not request.session.get('role') == 'owner' or not request.session.get('username'):
+    if not request.session.get('role') == 'o' or not request.session.get('username'):
         return redirect('pets:home')
 
     if request.method == "POST":
-        # process the form
-        # check if vet already exists in db
-        pet_vet, created = User.objects.get_or_create(
-            email=request.POST['vet-email'],  # find by email
+        vet_email = request.POST.get('vet_email')
+        vet, _ = Vet.objects.get_or_create(
+            email=vet_email,  # find by email
             defaults={
-                'firstName': request.POST.get('vet-fname'),
-                'lastName': request.POST.get('vet-lname'),
-                'phone': request.POST.get('vet-phone'),
-                'address': request.POST.get('vet-address'),
-                'city': request.POST.get('vet-city'),
-                'state': request.POST.get('vet-state'),
-                'zipCode': request.POST.get('vet-zip'),
-                'role': 'v',
+                'first_name': request.POST.get('vet_fname'),
+                'last_name': request.POST.get('vet_lname'),
+                'clinic_name': request.POST.get('vet_clinic'),
+                'address': request.POST.get('vet_address'),
+                'city': request.POST.get('vet_city'),
+                'state': request.POST.get('vet_state'),
+                'zip': request.POST.get('vet_zip'),
+                'phone': request.POST.get('vet_phone'),
             }
         )
-        pet_vet.save()
 
-        pet_pfp = request.FILES.get('pet-pfp') # get pfp
+        vet.save()
 
-        pet_name = request.POST.get('pet-name')
-        pet_type = request.POST.get('pet-type')[0]
-        pet_breed = request.POST.get('pet-breed')
-        pet_sex = request.POST.get('pet-sex')[0]
-        pet_dob = request.POST.get('pet-dob')
-        pet_wgt = request.POST.get('pet-wgt')
         pet_spay = request.POST.get('pet-spay-status')
         new_pet = Pet(
-            name=pet_name,
-            type=pet_type,
-            breed=pet_breed,
-            sex=pet_sex,
-            dob=pet_dob,
-            weight=pet_wgt,
+            name=request.POST.get('pet-name'),
+            type=request.POST.get('pet-type')[0],
+            breed=request.POST.get('pet-breed'),
+            sex=request.POST.get('pet-sex')[0],
+            dob=request.POST.get('pet-dob'),
+            weight=request.POST.get('pet-wgt'),
             spayed=pet_spay == "true",
-            vet=pet_vet,
+            vet=vet,
             owner=User.objects.get(username=request.session.get('username')),
-            pfp=pet_pfp
+            pfp=request.FILES.get('pet-pfp')
         )
         new_pet.save()
-        new_pet.nonOwners.add(pet_vet) # set pet's vet as a nonOwner - allows vet to see pet's profile
+
+        if vet.user:
+            new_pet.non_owners.add(vet) # set pet's vet as a nonOwner - allows vet to see pet's profile
 
         for key in request.POST:
             # create conditions
@@ -173,7 +176,6 @@ def pet_create(request):
 
         # SUCCESS message
         messages.add_message(request, messages.SUCCESS, "%s has successfully been created" % new_pet.name)
-
         return redirect('pets:pet-details', pet_id=new_pet.id)
 
     else:
@@ -199,36 +201,28 @@ def pet_edit(request, pet_id):
                     pet.pfp = request.FILES.get('pet-pfp')
                 pet.save()
 
-                vet = pet.vet
 
-                if vet.email == request.POST.get("vet-email"):
-                    vet.firstName = request.POST.get("vet-fname")
-                    vet.lastName = request.POST.get("vet-lname")
-                    vet.phone = request.POST.get("vet-phone")
-                    vet.address = request.POST.get("vet-address")
-                    vet.city = request.POST.get("vet-city")
-                    vet.state = request.POST.get("vet-state")
-                    vet.zipCode = request.POST.get("vet-zip")
-                    vet.save()
-                else :
-                    pet.nonOwners.remove(vet)
-                    new_vet, created = User.objects.get_or_create(
-                        email=request.POST['vet-email'],  # find by email
-                        defaults={
-                            'firstName': request.POST.get('vet-fname'),
-                            'lastName': request.POST.get('vet-lname'),
-                            'phone': request.POST.get('vet-phone'),
-                            'address': request.POST.get('vet-address'),
-                            'city': request.POST.get('vet-city'),
-                            'state': request.POST.get('vet-state'),
-                            'zipCode': request.POST.get('vet-zip'),
-                            'role': 'v',
+                new_vet_email = request.POST.get('vet_email')
+
+                if new_vet_email != pet.vet.email:
+                    new_vet, _ = Vet.objects.get_or_create(
+                        email=new_vet_email, defaults={
+                            'first_name': request.POST.get('vet_fname'),
+                            'last_name': request.POST.get('vet_lname'),
+                            'clinic_name': request.POST.get('vet_clinic'),
+                            'address': request.POST.get('vet_address'),
+                            'city': request.POST.get('vet_city'),
+                            'state': request.POST.get('vet_state'),
+                            'zip': request.POST.get('vet_zip'),
+                            'phone': request.POST.get('vet_phone'),
                         }
                     )
-                    new_vet.save()
+                    pet.non_owners.remove(pet.vet.user) if pet.vet.user else None
                     pet.vet = new_vet
+                    if new_vet.user:
+                        pet.non_owners.add(new_vet.user)
+
                     pet.save()
-                    pet.nonOwners.add(new_vet)
 
             # save conditions and vaccines
             pet.conditions.all().delete()
@@ -250,7 +244,7 @@ def pet_edit(request, pet_id):
                     if name.strip():
                         Vaccine.objects.create(pet=pet, name=name, lastDone=last, nextDue=next)
 
-            pet.save(update_fields=['lastUpdated']) # make sure lastUpdated changes when only conditions / vaccines are changed
+            pet.save(update_fields=['last_updated']) # make sure lastUpdated changes when only conditions / vaccines are changed
 
             # INFO message
             messages.add_message(request, messages.INFO,
@@ -308,30 +302,6 @@ def pet_delete(request, pet_id):
             return redirect('pets:pets-list')
 
 
-def login_view(request):
-    if request.method == "GET":
-        return render(request, "pets/home/login.html")
-    elif request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        if username == owner_user['username'] and password == owner_user['password']:
-            request.session['username'] = username
-            request.session['role'] = 'owner'
-            return redirect('pets:home')
-        elif username == vet_user['username'] and password == vet_user['password']:
-            request.session['username'] = username
-            request.session['role'] = 'vet'
-            return redirect('pets:home')
-        else:
-            return redirect('pets:login')
-
-
-def logout_view(request):
-    request.session.flush()
-    return redirect('pets:home')
-
-
 def pet_search(request):
     if request.session.get('username'):
         # merge into pets_list view
@@ -339,7 +309,7 @@ def pet_search(request):
         lower_keyword = keyword.lower()
         results = []
         current_user = get_object_or_404(User, username=request.session.get('username'))
-        pets = Pet.objects.filter(Q(owner=current_user) | Q(nonOwners=current_user))
+        pets = Pet.objects.filter(Q(owner=current_user) | Q(non_owners=current_user))
         for pet in pets:
             if pet.name.lower().startswith(lower_keyword):
                 results.append(pet)
@@ -348,4 +318,4 @@ def pet_search(request):
                       'pets/search/search.html',
                       {"results": results})
     else:
-        return redirect('pets:login')
+        return redirect('users:login')

@@ -106,48 +106,55 @@
                             <!-- required -->
                             <label for="vetfname">First Name<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vetfname" name="vet-fname" value="{{ vet.firstName }}">
+                                <input type="text" id="vet_fname" name="vet-fname" value="{{ vet.firstName }}">
                                 <span id="vetfname-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetlname">Last Name<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vetlname" name="vet-lname" value="{{ vet.lastName }}">
+                                <input type="text" id="vet_lname" name="vet-lname" value="{{ vet.lastName }}">
                                 <span id=" vetlname-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetPhone">Phone Number<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="tel" id="vetPhone" name="vet-phone" value="{{ vet.phone }}">
+                                <input type="tel" id="vet_phone" name="vet-phone" value="{{ vet.phone }}">
                                 <span id="vetPhone-error" class="error-message"></span>
                             </div>
 
                             <!-- requried -->
                             <label for="vetEmail">Email Address<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vetEmail" name="vet-email" value="{{ vet.email }}">
+                                <input type="text" id="vet_email" name="vet-email" value="{{ vet.email }}">
                                 <span id="vetEmail-error" class="error-message"></span>
+                            </div>
+                        
+                            <!-- required -->
+                            <label for="vetClinic">Clinic Name<span class="required">*</span></label>
+                            <div class="form-input">
+                                <input type="text" id="vetClinic" name="vet_clinic">
+                                <span id="vetClinic-error" class="error-message"></span>
                             </div>
 
                             <label for="vetAddress">Address</label>
                             <div class="form-input">
-                                <input type="text" id="vetAddress" name="vet-address" value="{{ vet.address }}">
+                                <input type="text" id="vet_address" name="vet-address" value="{{ vet.address }}">
                                 <span id=" vetAddress-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetCity">City<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vetCity" name="vet-city" value="{{ vet.city }}">
+                                <input type="text" id="vet_city" name="vet-city" value="{{ vet.city }}">
                                 <span id="vetCity-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetState">State<span class="required">*</span></label>
                             <div class="form-input">
-                                <select id="vetState" name="vet-state">
+                                <select id="vet_state" name="vet-state">
                                     <option value="" disabled {% if not vet.state %}selected{% endif %}>Select</option>
                                     <option value="AL" {% if vet.state == "AL" %}selected{% endif %}>Alabama</option>
                                     <option value="AK" {% if vet.state == "AK" %}selected{% endif %}>Alaska</option>
@@ -233,7 +240,7 @@
                             <!-- required -->
                             <label for="vetZip">Zip / Postal Code<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vetZip" name="vet-zip" value="{{ vet.zipCode }}">
+                                <input type="text" id="vet_zip" name="vet-zip" value="{{ vet.zipCode }}">
                                 <span id="vetZip-error" class="error-message"></span>
                             </div>
                         </div>

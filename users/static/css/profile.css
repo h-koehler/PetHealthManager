@@ -1,0 +1,36 @@
+.profile-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5em;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+}
+
+.details-container {
+    display: flex;
+    flex-direction: row;
+    background: var(--pale-green);
+    border-radius: 2em;
+    padding: 2em;
+    gap: 3em;
+}
+
+.pfp > img.user-photo {
+    border-radius: .75em;
+    height: 10em;
+    width: 10em;
+    border: .15em solid var(--pine-green);
+    object-fit: cover;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    gap: .5em;
+}
