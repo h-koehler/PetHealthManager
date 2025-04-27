@@ -20,15 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const elementsToRemove = vaccinesContainer.querySelectorAll(
                 `[for$="-${index}"],` +
                 `#vac-name-${index},` +
-                `#vac-name-error-${index},` +
+                `#vac-name-${index}-error,` +
                 `#last-done-${index},` +
-                `#last-done-error-${index},` +
+                `#last-done-${index}-error,` +
                 `#next-due-${index},` +
-                `#next-due-error-${index},` +
-                `#vac-delete-${index},` +
-                `.name-div-${index},` +
-                `.last-div-${index},` +
-                `.next-div-${index}`
+                `#next-due-${index}-error,` +
+                `#vac-delete-${index}`
             );
 
             elementsToRemove.forEach(el => el.remove());
@@ -58,19 +55,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const titleError = copy.querySelector("#condition-title-error")
         const deleteButton = copy.querySelector("#delete-condition")
         const descriptionInput = copy.querySelector(".condition-description");
-        const descriptionError = copy.querySelector("#description-error")
+        const descriptionError = copy.querySelector("#condition-description-error")
 
         titleInput.setAttribute("name", `condition-title-${conditionIndex}`);
         titleInput.setAttribute("id", `condition-title-${conditionIndex}`)
 
-        titleError.setAttribute("id", `condition-error-${conditionIndex}`)
+        titleError.setAttribute("id", `condition-title-${conditionIndex}-error`)
         deleteButton.setAttribute("id", `delete-condition-${conditionIndex}`)
         deleteButton.setAttribute("type", "button");
         attachConditionDeleteHandler(deleteButton)
         descriptionInput.setAttribute("name", `condition-description-${conditionIndex}`);
         descriptionInput.setAttribute("id", `condition-description-${conditionIndex}`);
 
-        descriptionError.setAttribute("id", `description-error-${conditionIndex}`)
+        descriptionError.setAttribute("id", `condition-description-${conditionIndex}-error`)
 
         titleInput.value = ""
         descriptionInput.value = "";
@@ -109,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
         nameInput.id = `vac-name-${vaccineIndex}`
         nameInput.name = `vac-name-${vaccineIndex}`
 
-        nameError.id = `vac-name-error-${vaccineIndex}`
+        nameError.id = `vac-name-${vaccineIndex}-error`
 
         lastLabel.setAttribute("for", `last-done-${vaccineIndex}`)
         lastDiv.classList.remove("last-input")
@@ -117,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         lastInput.id = `last-done-${vaccineIndex}`
         lastInput.name = `last-done-${vaccineIndex}`
 
-        lastError.id = `last-done-error-${vaccineIndex}`
+        lastError.id = `last-done-${vaccineIndex}-error`
 
         nextLabel.setAttribute("for", `next-due-${vaccineIndex}`)
         nextDiv.classList.remove("next-input")
@@ -126,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         nextInput.id = `next-due-${vaccineIndex}`
         nextInput.name = `next-due-${vaccineIndex}`
 
-        nextError.id = `next-due-error-${vaccineIndex}`
+        nextError.id = `next-due-${vaccineIndex}-error`
 
         deleteLabel.setAttribute("for", `vac-delete-${vaccineIndex}`)
         deleteButton.id = `vac-delete-${vaccineIndex}`

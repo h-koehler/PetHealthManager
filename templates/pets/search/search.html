@@ -59,7 +59,7 @@
                                             {{ pet.breed }}</p>
                                         <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
-                                    <i>Last updated {{ pet.lastUpdated | pretty_date}}</i>
+                                    <i>Last updated {{ pet.last_updated | pretty_date}}</i>
                                 </div>
                             </a>
                         {% endfor %}

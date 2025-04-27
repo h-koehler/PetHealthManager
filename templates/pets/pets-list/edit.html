@@ -10,12 +10,14 @@
     <script src="{% static "js/add-remove-medical-history.js" %}"></script>
     <script src="{% static "js/delete-modal.js" %}"></script>
     <script src="{% static "js/display-filename-oncreate.js" %}"></script>
+    <script src="{% static 'js/select-vet.js' %}"></script>
 {% endblock %}
 {% block content %}
     <h2 class="title">Edit Pet Profile</h2>
 
     <div class="create-pet-container">
-        <form id="create-pet-form" method="POST" enctype="multipart/form-data" action="{% url "pets:pet-edit" pet.id %}">
+        <form id="create-pet-form" method="POST" enctype="multipart/form-data"
+              action="{% url "pets:pet-edit" pet.id %}">
             {% csrf_token %}
             {% if relation == 'owner' %}
                 <div class="basic-and-vet">
@@ -102,35 +104,46 @@
                     </div>
                     <div class="form-section">
                         <h2>Vet Information</h2>
-                        <div class="vet-form">
+                        <div class="form-input">
+                            <select id="vet-select" name="vet_select">
+                                <option value="">Create New Vet</option>
+                                {% for v in vets %}
+                                    <option {% if vet.id == v.id %}selected{% endif %}
+                                            value="{{ v.id }}">{{ v.first_name }} {{ v.last_name }} -
+                                        <i>{{ v.clinic_name }}</i></option>
+                                {% endfor %}
+                            </select>
+                            <span id="vet-select-error" class="error-message "></span>
+                        </div>
+                        <div class="vet-form" id="new-vet-fields">
                             <!-- required -->
-                            <label for="vetfname">First Name<span class="required">*</span></label>
+                            <label for="vet_fname">First Name<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vet_fname" name="vet-fname" value="{{ vet.firstName }}">
+                                <input type="text" id="vetfname" name="vet_fname">
                                 <span id="vetfname-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
-                            <label for="vetlname">Last Name<span class="required">*</span></label>
+                            <label for="vet_lname">Last Name<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vet_lname" name="vet-lname" value="{{ vet.lastName }}">
-                                <span id=" vetlname-error" class="error-message"></span>
+                                <input type="text" id="vetlname" name="vet_lname">
+                                <span id="vetlname-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetPhone">Phone Number<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="tel" id="vet_phone" name="vet-phone" value="{{ vet.phone }}">
+                                <input type="tel" id="vetPhone" name="vet_phone">
                                 <span id="vetPhone-error" class="error-message"></span>
                             </div>
 
                             <!-- requried -->
                             <label for="vetEmail">Email Address<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vet_email" name="vet-email" value="{{ vet.email }}">
+                                <input type="text" id="vetEmail" name="vet_email">
                                 <span id="vetEmail-error" class="error-message"></span>
                             </div>
-                        
+
                             <!-- required -->
                             <label for="vetClinic">Clinic Name<span class="required">*</span></label>
                             <div class="form-input">
@@ -138,109 +151,89 @@
                                 <span id="vetClinic-error" class="error-message"></span>
                             </div>
 
-                            <label for="vetAddress">Address</label>
+                            <label for="vetAddress">Address<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vet_address" name="vet-address" value="{{ vet.address }}">
-                                <span id=" vetAddress-error" class="error-message"></span>
+                                <input type="text" id="vetAddress" name="vet_address">
+                                <span id="vetAddress-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetCity">City<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vet_city" name="vet-city" value="{{ vet.city }}">
+                                <input type="text" id="vetCity" name="vet_city">
                                 <span id="vetCity-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetState">State<span class="required">*</span></label>
                             <div class="form-input">
-                                <select id="vet_state" name="vet-state">
-                                    <option value="" disabled {% if not vet.state %}selected{% endif %}>Select</option>
-                                    <option value="AL" {% if vet.state == "AL" %}selected{% endif %}>Alabama</option>
-                                    <option value="AK" {% if vet.state == "AK" %}selected{% endif %}>Alaska</option>
-                                    <option value="AZ" {% if vet.state == "AZ" %}selected{% endif %}>Arizona</option>
-                                    <option value="AR" {% if vet.state == "AR" %}selected{% endif %}>Arkansas</option>
-                                    <option value="AS" {% if vet.state == "AS" %}selected{% endif %}>American Samoa
-                                    </option>
-                                    <option value="CA" {% if vet.state == "CA" %}selected{% endif %}>California</option>
-                                    <option value="CO" {% if vet.state == "CO" %}selected{% endif %}>Colorado</option>
-                                    <option value="CT" {% if vet.state == "CT" %}selected{% endif %}>Connecticut
-                                    </option>
-                                    <option value="DE" {% if vet.state == "DE" %}selected{% endif %}>Delaware</option>
-                                    <option value="DC" {% if vet.state == "DC" %}selected{% endif %}>District of
-                                        Columbia
-                                    </option>
-                                    <option value="FL" {% if vet.state == "FL" %}selected{% endif %}>Florida</option>
-                                    <option value="GA" {% if vet.state == "GA" %}selected{% endif %}>Georgia</option>
-                                    <option value="GU" {% if vet.state == "GU" %}selected{% endif %}>Guam</option>
-                                    <option value="HI" {% if vet.state == "HI" %}selected{% endif %}>Hawaii</option>
-                                    <option value="ID" {% if vet.state == "ID" %}selected{% endif %}>Idaho</option>
-                                    <option value="IL" {% if vet.state == "IL" %}selected{% endif %}>Illinois</option>
-                                    <option value="IN" {% if vet.state == "IN" %}selected{% endif %}>Indiana</option>
-                                    <option value="IA" {% if vet.state == "IA" %}selected{% endif %}>Iowa</option>
-                                    <option value="KS" {% if vet.state == "KS" %}selected{% endif %}>Kansas</option>
-                                    <option value="KY" {% if vet.state == "KY" %}selected{% endif %}>Kentucky</option>
-                                    <option value="LA" {% if vet.state == "LA" %}selected{% endif %}>Louisiana</option>
-                                    <option value="ME" {% if vet.state == "ME" %}selected{% endif %}>Maine</option>
-                                    <option value="MD" {% if vet.state == "MD" %}selected{% endif %}>Maryland</option>
-                                    <option value="MA" {% if vet.state == "MA" %}selected{% endif %}>Massachusetts
-                                    </option>
-                                    <option value="MI" {% if vet.state == "MI" %}selected{% endif %}>Michigan</option>
-                                    <option value="MN" {% if vet.state == "MN" %}selected{% endif %}>Minnesota</option>
-                                    <option value="MS" {% if vet.state == "MS" %}selected{% endif %}>Mississippi
-                                    </option>
-                                    <option value="MO" {% if vet.state == "MO" %}selected{% endif %}>Missouri</option>
-                                    <option value="MT" {% if vet.state == "MT" %}selected{% endif %}>Montana</option>
-                                    <option value="NE" {% if vet.state == "NE" %}selected{% endif %}>Nebraska</option>
-                                    <option value="NV" {% if vet.state == "NV" %}selected{% endif %}>Nevada</option>
-                                    <option value="NH" {% if vet.state == "NH" %}selected{% endif %}>New Hampshire
-                                    </option>
-                                    <option value="NJ" {% if vet.state == "NJ" %}selected{% endif %}>New Jersey</option>
-                                    <option value="NM" {% if vet.state == "NM" %}selected{% endif %}>New Mexico</option>
-                                    <option value="NY" {% if vet.state == "NY" %}selected{% endif %}>New York</option>
-                                    <option value="NC" {% if vet.state == "NC" %}selected{% endif %}>North Carolina
-                                    </option>
-                                    <option value="ND" {% if vet.state == "ND" %}selected{% endif %}>North Dakota
-                                    </option>
-                                    <option value="MP" {% if vet.state == "MP" %}selected{% endif %}>Northern Mariana
-                                        Islands
-                                    </option>
-                                    <option value="OH" {% if vet.state == "OH" %}selected{% endif %}>Ohio</option>
-                                    <option value="OK" {% if vet.state == "OK" %}selected{% endif %}>Oklahoma</option>
-                                    <option value="OR" {% if vet.state == "OR" %}selected{% endif %}>Oregon</option>
-                                    <option value="PA" {% if vet.state == "PA" %}selected{% endif %}>Pennsylvania
-                                    </option>
-                                    <option value="PR" {% if vet.state == "PR" %}selected{% endif %}>Puerto Rico
-                                    </option>
-                                    <option value="RI" {% if vet.state == "RI" %}selected{% endif %}>Rhode Island
-                                    </option>
-                                    <option value="SC" {% if vet.state == "SC" %}selected{% endif %}>South Carolina
-                                    </option>
-                                    <option value="SD" {% if vet.state == "SD" %}selected{% endif %}>South Dakota
-                                    </option>
-                                    <option value="TN" {% if vet.state == "TN" %}selected{% endif %}>Tennessee</option>
-                                    <option value="TX" {% if vet.state == "TX" %}selected{% endif %}>Texas</option>
-                                    <option value="TT" {% if vet.state == "TT" %}selected{% endif %}>Trust Territories
-                                    </option>
-                                    <option value="UT" {% if vet.state == "UT" %}selected{% endif %}>Utah</option>
-                                    <option value="VT" {% if vet.state == "VT" %}selected{% endif %}>Vermont</option>
-                                    <option value="VA" {% if vet.state == "VA" %}selected{% endif %}>Virginia</option>
-                                    <option value="VI" {% if vet.state == "VI" %}selected{% endif %}>Virgin Islands
-                                    </option>
-                                    <option value="WA" {% if vet.state == "WA" %}selected{% endif %}>Washington</option>
-                                    <option value="WV" {% if vet.state == "WV" %}selected{% endif %}>West Virginia
-                                    </option>
-                                    <option value="WI" {% if vet.state == "WI" %}selected{% endif %}>Wisconsin</option>
-                                    <option value="WY" {% if vet.state == "WY" %}selected{% endif %}>Wyoming</option>
+                                <select id="vetState" name="vet_state">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="AS">American Samoa</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="GU">Guam</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="MP">Northern Mariana Islands</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="PR">Puerto Rico</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="TT">Trust Territories</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="VI">Virgin Islands</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
                                 </select>
-
                                 <span id="vetState-error" class="error-message"></span>
                             </div>
 
                             <!-- required -->
                             <label for="vetZip">Zip / Postal Code<span class="required">*</span></label>
                             <div class="form-input">
-                                <input type="text" id="vet_zip" name="vet-zip" value="{{ vet.zipCode }}">
+                                <input type="text" id="vetZip" name="vet_zip">
                                 <span id="vetZip-error" class="error-message"></span>
                             </div>
                         </div>
@@ -250,33 +243,37 @@
             <div class="form-section">
                 <h2>Medical History</h2>
                 <div class="conditions">
-                <div id="condition-template" class="form-textarea">
-                    <div class="condition-title-and-delete">
-                        <div>
-                            <input type="text" class="condition-title" placeholder="Title"/>
-                            <span id="condition-title-error" class="error-message"></span>
-                        </div>
-                        <button type="button" id="delete-condition" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                    <textarea class="condition-description" placeholder="Description"></textarea>
-                    <span id="description-error" class="error-message"></span>
-                </div>
-
-                {% for condition in conditions %}
-                    <div class="form-textarea condition-{{ condition.id }}">
+                    <div id="condition-template" class="form-textarea">
                         <div class="condition-title-and-delete">
                             <div>
-                                <input type="text" id="condition-title-{{ condition.id }}" placeholder="Title" value="{{ condition.title }}" name="condition-title-{{ condition.id }}"/>
-{#                                <span id="condition-title-error" class="error-message"></span>#}
+                                <input type="text" class="condition-title" placeholder="Title"/>
+                                <span id="condition-title-error" class="error-message"></span>
                             </div>
-                            <button type="button" id="delete-condition-{{ condition.id }}" class="delete-med-hist"><i class="fa-solid fa-trash-can"></i>
+                            <button type="button" id="delete-condition" class="delete-med-hist"><i
+                                    class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
-                        <textarea id="condition-description-{{ condition.id }}" placeholder="Description" name="condition-description-{{ condition.id }}">{{ condition.description }}</textarea>
-{#                        <span id="condition-error-{{ condition.id }}" class="error-message"></span>#}
+                        <textarea class="condition-description" placeholder="Description"></textarea>
+                        <span id="condition-description-error" class="error-message"></span>
                     </div>
-                {% endfor %}
+
+                    {% for condition in conditions %}
+                        <div class="form-textarea condition-{{ condition.id }}">
+                            <div class="condition-title-and-delete">
+                                <div>
+                                    <input type="text" id="condition-title-{{ condition.id }}" placeholder="Title"
+                                           value="{{ condition.title }}" name="condition-title-{{ condition.id }}"/>
+                                    <span id="condition-title-{{ condition.id }}-error" class="error-message"></span>
+                                </div>
+                                <button type="button" id="delete-condition-{{ condition.id }}" class="delete-med-hist">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                            <textarea id="condition-description-{{ condition.id }}" placeholder="Description"
+                                      name="condition-description-{{ condition.id }}">{{ condition.description }}</textarea>
+                            <span id="condition-description-{{ condition.id }}-error" class="error-message"></span>
+                        </div>
+                    {% endfor %}
                 </div>
                 <button type="button" id="add-condition" class="secondary-button">+ Add Section</button>
                 <h3>Vaccines</h3>
@@ -300,14 +297,15 @@
                             <span id="last-done-error" class="error-message"></span>
                         </div>
 
-                        <label for="next-due-1" class="individual-vac-label next-label">Next due</label>
+                        <label for="next-due" class="individual-vac-label next-label">Next due</label>
                         <div class="form-input next-input">
                             <input type="date" id="next-due" name="next-due">
                             <span id="next-due-error" class="error-message"></span>
                         </div>
 
                         <label for="vac-delete" class="individual-vac-label vac-delete">Delete</label>
-                        <button id="vac-delete" class="delete-med-hist" type="button"><i class="fa-solid fa-trash-can"></i></button>
+                        <button id="vac-delete" class="delete-med-hist" type="button"><i
+                                class="fa-solid fa-trash-can"></i></button>
                     </div>
 
 
@@ -316,25 +314,26 @@
                         <div class="form-input name-div-{{ vac.id }}">
                             <input type="text" id="vac-name-{{ vac.id }}" name="vac-name-{{ vac.id }}"
                                    value="{{ vac.name }}">
-                            <span id="vac-name-error-{{ vac.id }}" class="error-message"></span>
+                            <span id="vac-name-{{ vac.id }}-error" class="error-message"></span>
                         </div>
 
                         <label for="last-done-{{ vac.id }}" class="individual-vac-label">Last done</label>
                         <div class="form-input last-div-{{ vac.id }}">
                             <input type="date" id="last-done-{{ vac.id }}" name="last-done-{{ vac.id }}"
-                                   value="{{ vac.lastDone | date:'Y-m-d' }}">
-                            <span id="last-done-error-{{ vac.id }}" class="error-message"></span>
+                                   value="{{ vac.last_done | date:'Y-m-d' }}">
+                            <span id="last-done-{{ vac.id }}-error" class="error-message"></span>
                         </div>
 
                         <label for="next-due-{{ vac.id }}" class="individual-vac-label">Next due</label>
                         <div class="form-input next-div-{{ vac.id }}">
-                            <input type="date" id="next-due-{{ vac.id }}1" name="next-due-{{ vac.id }}"
-                                   value="{{ vac.nextDue | date:'Y-m-d' }}">
-                            <span id="next-due-error-{{ vac.id }}" class="error-message"></span>
+                            <input type="date" id="next-due-{{ vac.id }}" name="next-due-{{ vac.id }}"
+                                   value="{{ vac.next_due | date:'Y-m-d' }}">
+                            <span id="next-due-{{ vac.id }}-error" class="error-message"></span>
                         </div>
 
                         <label for="vac-delete-{{ vac.id }}" class="individual-vac-label vac-delete">Delete</label>
-                        <button id="vac-delete-{{ vac.id }}" class="delete-med-hist" type="button"><i class="fa-solid fa-trash-can"></i></button>
+                        <button id="vac-delete-{{ vac.id }}" class="delete-med-hist" type="button"><i
+                                class="fa-solid fa-trash-can"></i></button>
                     {% endfor %}
 
                 </div>

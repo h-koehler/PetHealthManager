@@ -44,11 +44,11 @@
                     {% endif %}
             </div>
             <div class="row">
-                {% if user.username == request.session.username or request.session.role == 'a' %}
+                {% if user.username == request.user.username or request.session.role == 'a' %}
                     <a class="secondary-button" href="{% url 'users:edit' user.username %}">Edit <i
                             class="fa-solid fa-pencil"></i></a>
                 {% endif %}
-                {% if user.username != request.session.username %}
+                {% if user.username != request.user.username %}
                     <a class="secondary-button">Message <i
                             class="fa-solid fa-comment-medical"></i></a>
                     <a class="secondary-button">

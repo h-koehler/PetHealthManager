@@ -41,9 +41,13 @@
                 <img class="empty-list-img" src="{% static "img/empty-list.jpg" %}" alt="Image of a cat looking sad">
             </div>
         {% else %}
-            {% if request.session.role == 'v' %}
+            {% if request.session.role == 'v' or request.session.role == 'a' %}
                 <div class="pets-section">
-                    <h2>Clients' Pets</h2>
+                    {% if request.session.role == 'v' %}
+                        <h2>Clients' Pets</h2>
+                    {% else %}
+                        <h2>Users' Pets</h2>
+                    {% endif %}
                     <div class="pets-list">
                         {% for pet in clients %}
                             <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
@@ -75,7 +79,7 @@
                                             {{ pet.breed }}</p>
                                         <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
-                                    <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                                    <i>Last updated {{ pet.last_updated | pretty_date }}</i>
                                 </div>
                             </a>
                         {% endfor %}
@@ -83,6 +87,7 @@
                 </div>
             {% else %}
                 <div class="pets-section">
+                {% if pets|length > 0 %}
                     <h2>Your Pets</h2>
                     <div class="pets-list">
                         {% for pet in pets %}
@@ -117,13 +122,15 @@
                                             {{ pet.breed }}</p>
                                         <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
-                                    <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                                    <i>Last updated {{ pet.last_updated|pretty_date }}</i>
                                 </div>
                             </a>
                         {% endfor %}
                     </div>
+                {% endif %}
                 </div>
                 <div class="pets-section">
+                {% if clients|length > 0 %}
                     <h2>Clients' Pets</h2>
                     <div class="pets-list">
                         {% for pet in clients %}
@@ -157,11 +164,12 @@
                                             {{ pet.breed }}</p>
                                         <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
                                     </div>
-                                    <i>Last updated {{ pet.lastUpdated|pretty_date }}</i>
+                                    <i>Last updated {{ pet.last_updated |pretty_date }}</i>
                                 </div>
                             </a>
                         {% endfor %}
                     </div>
+                {% endif %}
                 </div>
             {% endif %}
         {% endif %}

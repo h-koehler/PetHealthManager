@@ -7,23 +7,27 @@
     <link rel="stylesheet" href="{% static "css/home.css" %}">
 {% endblock %}
 {% block content %}
-    <div class="feed">
-            <div class="sort-filter">
-                <p><i class="fa-solid fa-arrow-down-wide-short"></i> Sort & Filter</p>
-            </div>
-            {% for feedItem in feed %}
-                <div class="feed-item">
-                <div class="feed-content">
-                    <h2><a href="#">{{ feedItem.title }}</a></h2>
-                    <p>{{ feedItem.description}}</p>
-                    <p class="last-updated">Change made {{ feedItem.dateCreated | naturalday}}</p>
-                </div>
-                <div class="comments">
-                    <a href="#comments"><i class="fa-solid fa-comment"></i></a>
-{#                    <p>{{ feedItem.comments.length }}</p>#}
-                    <p>3</p>
-                </div>
-            </div>
-            {% endfor %}
+    <div class="home">
+        <div class="sort-filter">
+            <p><i class="fa-solid fa-arrow-down-wide-short"></i> Sort & Filter</p>
         </div>
+    <div class="feed">
+        {% for feedItem in feed %}
+            <div class="feed-item">
+                <div class="feed-content">
+                    <div class="title">
+                        <span class="pet"><a href="{{ feedItem.pet.get_absolute_url }}">{{ feedItem.pet.name }}'s</a></span>
+                        <span class="verb">{{ feedItem.verb | safe}}</span>
+                    </div>
+                    {% if feedItem.description is not None %}
+                    <div class="description">
+                        {{ feedItem.description | safe}}
+                    </div>
+                    {% endif %}
+                    <p class="last-updated">Update made by <a href="{{ feedItem.user.details.get_absolute_url }}">{{ feedItem.user.first_name }}</a> on {{ feedItem.created | pretty_date_time }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    </div>
 {% endblock %}

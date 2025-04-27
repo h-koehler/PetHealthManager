@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.conf import settings
+from django.urls import reverse
+
 from users.models import Vet
 
 # Create your models here.
@@ -53,6 +55,12 @@ class Pet(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
     non_owners = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='authorized_users', blank=True)
 
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('pets:pet-details', args=[self.id])
+
     def get_user_relation(self, user):
         if self.owner == user:
             return 'owner'
@@ -82,24 +90,20 @@ class Condition(models.Model):
     title = models.CharField(max_length=30)
     description = models.TextField()
 
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('pets:pet-details', args=[self.pet.id])
+
 class Vaccine(models.Model):
     pet = models.ForeignKey('Pet', on_delete=models.CASCADE, related_name='vaccines')
     name = models.CharField(max_length=30)
     last_done = models.DateTimeField()
-    next_due = models.DateTimeField()
+    next_due = models.DateTimeField(blank=True, null=True)
 
-class FeedItem(models.Model):
-    GENERAL = "gen"
-    INQUIRY = 'inq'
-    FEED_TYPE_CHOICES = [
-        (GENERAL, "General Update"),
-        (INQUIRY, "Inquiry to Vet"),
-    ]
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, related_name='feed_items')
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='feed_items_created_by')
-    feed_type = models.CharField(max_length=3, choices=FEED_TYPE_CHOICES, default=GENERAL)
-    # comments
-    date_created = models.DateTimeField(auto_now_add=True)
-    is_solved = models.BooleanField(default=False)
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('pets:pet-details', args=[self.pet.id])

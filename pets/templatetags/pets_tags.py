@@ -23,7 +23,10 @@ def get_age_from_dob(dob):
 
 @register.filter
 def pretty_date(dob):
-    return dob.strftime("%b %d, %Y")
+    if dob is not None:
+        return dob.strftime("%b %d, %Y")
+    else:
+        return ""
 
 @register.filter
 def pretty_date_time(dob):

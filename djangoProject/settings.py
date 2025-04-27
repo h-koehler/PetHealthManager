@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'pets.apps.PetsConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'actions.apps.ActionsConfig'
 
 ]
 

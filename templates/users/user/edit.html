@@ -1,6 +1,6 @@
 {% extends "pets/base.html" %}
 {% load static %}
-{% block page-title %}Register User{% endblock %}
+{% block page-title %}Edit Account{% endblock %}
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static "css/register-user.css" %}">
 {% endblock %}
@@ -10,10 +10,10 @@
     {#    <script src="{% static "js/display-filename-oncreate.js" %}"></script>#}
 {% endblock %}
 {% block content %}
-    <h2 class="title">Register User</h2>
+    <h2 class="title">Edit Account Information</h2>
     <div class="required-note"><span class="required">*</span> = Required</div>
     <div class="register-user-container">
-        <form id="create-user-form" method="POST" action="{% url 'users:register' %}" enctype="multipart/form-data">
+        <form id="create-user-form" method="POST" action="{% url 'users:edit' user.username %}" enctype="multipart/form-data">
             {% csrf_token %}
             {% if role == 'vet' %}
                 <input type="hidden" id='role' name="role" value="v">
@@ -163,13 +163,13 @@
                 <h3>Change password</h3>
                 <div class="form-input">
                     <label for="old-password">Old Password</label>
-                    <input type="password" id="old-password" name="password">
+                    <input type="password" id="old-password" name="old-password">
                     <span id="old-password-error" class="error-message"></span>
                 </div>
                 <div class="form-input">
                     <label for="new-password">New Password</label>
-                    <input type="password" id="new-password" name="password">
-                    <span id="new-password-error" class="error-message"></span>
+                    <input type="password" id="register-password" name="register-password">
+                    <span id="register-error" class="error-message"></span>
                 </div>
                 <div id="password-message">
                     <div>Password must contain:</div>

@@ -1,9 +1,18 @@
 /* containers */
-.feed {
+.home {
     display: flex;
     flex-direction: column;
     gap: 2em;
-    margin: 0 12em;
+    margin: 0 12em 3em;
+}
+
+.feed {
+    max-width: 70em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    gap: 1em;
 }
 
 .feed-item {
@@ -15,6 +24,7 @@
     border-radius: 2em;
     border: .2em solid var(--brunswick-green);
     gap: 2em;
+    width: 100%;
 }
 
 .feed-content {
@@ -24,18 +34,38 @@
     overflow:auto;
 }
 
-.comments {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0;
+.title {
+    font-size: 1.25em;
+}
+
+.title a,
+.title a:visited {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.title a:hover,
+.last-updated a:hover {
+    text-decoration: underline;
+}
+
+.description > ul {
+    list-style-type: disc;
+    padding-left: 1em;
 }
 
 .last-updated {
     font-style: italic;
     font-weight: 300;
-    font-size: .8em;
+    font-size: 1em;
+}
+
+.last-updated a,
+.last-updated a:visited {
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
 }
 
 /* sort button - not functional */
@@ -49,14 +79,6 @@
 }
 
 /* hover effects */
-.feed-item:hover {
-    cursor: pointer;
-}
-
-.feed-content h2:hover {
-    text-decoration: underline;
-}
-
 .comments > a:hover {
     color: var(--mantis-green);
 }
@@ -66,16 +88,6 @@
 .feed-content h2>a {
     color: var(--default-font-color);
     text-decoration: none;;
-}
-
-/* changing comments appearence */
-.comments > a {
-    font-size: 2em;
-    color: var(--brunswick-green);
-}
-
-.comments > p {
-    font-size: 1.25em;
 }
 
 /* mobile formatting */

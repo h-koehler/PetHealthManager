@@ -13,4 +13,5 @@ urlpatterns = [
     path('search/', views.pet_search, name='pet-search'),
     path('edit-condition/', views.pet_edit_condition, name='pet-edit_condition'),
     path('popup/', views.pet_popup, name='pet-popup'),
+    path('<int:pet_id>/share/', views.pet_share, name='pet-share'),
 ]

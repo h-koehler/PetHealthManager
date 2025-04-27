@@ -1,10 +1,4 @@
-console.log("Form validation script loaded");
-
 $(document).ready(function () {
-    document.getElementById("create-pet-form").addEventListener("submit", () => {
-    console.log("Form submit event fired");
-});
-
     const $form = $("#create-pet-form");
 
     $form.attr("method", "POST");
@@ -15,22 +9,19 @@ $(document).ready(function () {
 
     // validate form on submit
     $form.on("submit", function (event) {
-        console.log("Submit handler called");
-        // event.preventDefault();
-        // let isValid = true;
-        //
-        // $form.find("input, select, textarea").each(function () {
-        //     if (!validateInput($(this))) {
-        //         isValid = false;
-        //     }
-        // });
-        //
-        // if (!isValid) {
-        //     event.preventDefault();
-        // } else {
-        //     event.target.submit();
-        //     $("#form-submitted").removeClass("display-none");
-        // }
+        let isValid = true;
+
+        $form.find("input, select, textarea").each(function () {
+            if (!validateInput($(this))) {
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+        } else {
+            event.target.submit();
+        }
     })
 
     // validate single input field
@@ -40,11 +31,13 @@ $(document).ready(function () {
             return true; // Skip validation if input is missing
         }
 
-        if ($input.attr("id") === "pfp") {
+        if ($input.closest("#vaccine-template").length > 0) {
             return true;
         }
 
-        const errorId = `${$input.attr("id")}-error`;
+        const val = $input.val()?.trim() || "";
+        const inputId = $input.attr('id')
+        const errorId = `${inputId}-error`
         const $error = $(`#${errorId}`);
 
         if (!$error.length) {
@@ -52,157 +45,187 @@ $(document).ready(function () {
             return true;
         }
 
-        $error.text("");
-        $input.removeClass("input-error");
+        const vetSelect = $("#vet-select");
+        const selectedVet = vetSelect.val();
+        const isCreatingNewVet = selectedVet === "";
 
-        const val = $input.val()?.trim() || "";
-
-        if (!val) {
-            if ($input.attr("id").includes('vac-name')) {
-                $error.text("Please enter the vaccine name.");
-            } else if ($input.attr("id").includes('last-done') || $input.attr("id").includes("next-due")) {
-                $error.text("Please enter a valid date.");
-            } else {
-                $error.text(`Please enter your ${$input.attr("name").replace("-", " ")}.`);
-            }
-            $input.addClass("input-error");
-            return false;
+        if (!isCreatingNewVet && inputId.startsWith("vet")) {
+            return true;
         }
 
-        if ($input.attr("id") === "petName") {
-            if (val.length < 3) {
-                $error.text("Your pet's name must be at least 3 characters long.");
-                $input.addClass("input-error");
+        $error.text("");
+
+        const today = new Date();
+
+        if (inputId === "pfp") {
+            return true;
+        }
+
+        if (inputId === "petName") {
+            if (val.length === 0) {
+                $error.text("Please enter your pet's name.")
+                return false;
+            } else if (val.length < 3) {
+                $error.text("Pet's name must be at least 3 characters long.");
                 return false;
             } else if (val.length > 29) {
-                $error.text("Your pet's name must be less than 30 characters long.");
-                $input.addClass("input-error");
-                return false;
-            } else if (/\d/.test(val)) {
-                $error.text("Your pet's name may not contain any numbers.");
-                $input.addClass("input-error");
+                $error.text("Pet's name must be less than 30 characters long.");
                 return false;
             }
-        } else if ($input.attr("id") === "breed") {
+        } else if (inputId === "breed") {
+            if (val.length === 0) {
+                $error.text("Please enter your pet's breed.")
+                return false;
+            }
             if (val.length < 3) {
-                $error.text("Your pet's breed must be at least 3 characters long.");
-                $input.addClass("input-error");
+                $error.text("Pet's breed must be at least 3 characters long.");
                 return false;
             } else if (val.length > 29) {
-                $error.text("Your pet's breed must be less than 30 characters long.");
-                $input.addClass("input-error");
-                return false;
-            } else if (/\d/.test(val)) {
-                $error.text("Your pet's breed may not contain any numbers.");
-                $input.addClass("input-error");
+                $error.text("Pet's breed must be less than 30 characters long.");
                 return false;
             }
-        } else if ($input.attr("id") === "dob") {
+        } else if (inputId === "dob") {
             const inputDate = new Date(val);
-            const today = new Date();
             if (inputDate > today) {
-                $error.text("Please enter a date before today.");
-                $input.addClass("input-error");
+                $error.text("Please enter a date on or before today.");
                 return false;
             }
-        } else if ($input.attr("id") === "wgt") {
+        } else if (inputId === "wgt") {
             if (isNaN(val) || val <= 0) {
-                $error.text("Your pet's weight must be a positive, non-zero number.")
-                $input.addClass("input-error");
+                $error.text("Weight must be a positive, non-zero number.")
                 return false
             }
-        } else if ($input.attr("id") === "vetfname") {
-            if (val.length < 3) {
-                $error.text("Your vet's first name must be at least 3 characters long.");
-                $input.addClass("input-error");
+        } else if (inputId === "vetfname") {
+            if (val.length === 0) {
+                $error.text("Please enter your vet's first name.")
+                return false;
+            } else if (val.length < 3) {
+                $error.text("First name must be at least 3 characters long.");
                 return false;
             } else if (val.length > 29) {
-                $error.text("Your vet's first name must be less than 30 characters long.");
-                $input.addClass("input-error");
-                return false;
-            } else if (/\d/.test(val)) {
-                $error.text("Your vet's first name may not contain any numbers.");
-                $input.addClass("input-error");
+                $error.text("First name must be less than 30 characters long.");
                 return false;
             }
-        } else if ($input.attr("id") === "vetlname") {
-            if (val.length < 3) {
-                $error.text("Your vet's last name must be at least 3 characters long.");
-                $input.addClass("input-error");
+        } else if (inputId === "vetlname") {
+            if (val.length === 0) {
+                $error.text("Please enter your vet's last name.")
+                return false;
+            } else if (val.length < 3) {
+                $error.text("Last name must be at least 3 characters long.");
                 return false;
             } else if (val.length > 29) {
-                $error.text("Your vet's last name must be less than 30 characters long.");
-                $input.addClass("input-error");
+                $error.text("Last name must be less than 30 characters long.");
                 return false;
             } else if (/\d/.test(val)) {
-                $error.text("Your vet's last name may not contain any numbers.");
-                $input.addClass("input-error");
+                $error.text("Last name may not contain any numbers.");
                 return false;
             }
-        } else if ($input.attr("id") === "vetAddress") {
-            if (val.length < 3) {
-                $error.text("Your vet's address must be at least 3 characters long.");
+        } else if (inputId === "vetPhone") {
+            if (!/^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/.test(val)) {
+                $error.text("Please enter a valid phone number.");
+                return false;
+            }
+        } else if (inputId === 'vetEmail') {
+            if (val.length === 0) {
+                $error.text("Please enter your vet's email address.")
+                return false
+            } else if (!val.includes('@')) {
+                $error.text("Please enter a valid email address")
+                return false
+            } else if (val.length > 99) {
+                $error.text("Email address must be less than 100 characters long.")
+            }
+        } else if (inputId === "vetClinic") {
+            if (val.length === 0) {
+                $error.text("Please enter your vet's clinic nane.")
+                return false
+            } else if (val.length < 3) {
+                $error.text("Clinic name must be at least 3 characters long.")
+                return false
+            } else if (val.length > 100) {
+                $error.text("Clinic name must be less than 100 characters long.")
+                return false
+            }
+        } else if (inputId === "vetAddress") {
+            if (val.length === 0) {
+                $error.text("Please enter the vet clinic street address.")
+                return false
+            } else if (val.length < 3) {
+                $error.text("Address must be at least 3 characters long.");
                 $input.addClass("input-error");
                 return false;
             } else if (val.length > 29) {
-                $error.text("Your vet's address must be less than 30 characters long.");
+                $error.text("Address must be less than 30 characters long.");
                 $input.addClass("input-error");
                 return false;
             } else if (!(/\d/.test(val)) || !(/[a-zA-Z]/.test(val))) {
-                $error.text("Your vet's address must contain at least 1 number and 1 letter.");
+                $error.text("Address must contain at least 1 number and 1 letter.");
                 $input.addClass("input-error");
                 return false;
             }
-        } else if ($input.attr("id") === "vetCity") {
-            if (val.length < 3) {
-                $error.text("Your vet's city must be at least 3 characters long.");
+        } else if (inputId === "vetCity") {
+            if (val.length === 0) {
+                $error.text("Please enter the vet clinic city.")
+                return false;
+            } else if (val.length < 3) {
+                $error.text("City must be at least 3 characters long.");
                 $input.addClass("input-error");
                 return false;
             } else if (val.length > 29) {
-                $error.text("Your vet's city must be less than 30 characters long.");
+                $error.text("City must be less than 30 characters long.");
                 $input.addClass("input-error");
                 return false;
             }
-        } else if ($input.attr("id") === "vetZip") {
-            if (!/^\d{5}(-\d{4})?$/.test(val)) {
+        } else if (inputId === "vetZip") {
+            if (!/^\d{5}(-\d{4})?$/.test(val) || val.length === 0) {
                 $error.text("Please enter a valid zip code.");
                 $input.addClass("input-error");
                 return false;
             }
-        } else if ($input.attr("id") === "vetPhone") {
-            if (!/^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/.test(val)) {
-                $error.text("Please enter a valid phone number.");
-                $input.addClass("input-error");
+        } else if (inputId.includes("condition-title")) {
+            if (val.length === 0) {
+                $error.text("Please enter a condition title.")
+                return false;
+            } else if (val.length > 29) {
+                $error.text("Title must be less than 30 characters long.")
+                return false
+            }
+        } else if (inputId.includes("condition-description")) {
+            if (val.length === 0) {
+                $error.text("Please enter a condition description.")
+                return false
+            }
+        } else if (inputId.includes("vac-name")) {
+            if (val.length === 0) {
+                $error.text("Please enter a vaccine name.")
+                return false;
+            } else if (val.length > 29) {
+                $error.text("Name must be less than 30 characters long.")
+                return false;
+            }
+        } else if (inputId.includes("last-done")) {
+            if (!val) {
+                $error.text("Please enter a date on or before today.")
+                return false
+            }
+            const inputDate = new Date(val);
+            if (inputDate > today) {
+                $error.text("Please enter a date on or before today.")
+                return false
+            }
+        } else if (inputId.includes("next-due")) {
+            if (!val) {
+                return true;
+            }
+            const id = inputId.split("-").pop();
+            const lastDone = $(`#last-done-${id}`);
+            const lastDoneDate = new Date(lastDone.val())
+            const nextDueDate = new Date(val)
+            if (nextDueDate < lastDoneDate) {
+                $error.text("Please enter a date after Last Done.")
                 return false;
             }
         }
-        // } else if ($input.attr("id").includes("vac-name")) {
-        //     if (val.length < 3) {
-        //         $error.text("The vaccine name must be at least 3 characters long.");
-        //         $input.addClass('input-error');
-        //         return false;
-        //     } else if (val.length > 29) {
-        //         $error.text("The vaccine name must less than 30 characters long.");
-        //         $input.addClass('input-error');
-        //         return false;
-        //     }
-        // } else if ($input.attr("id").includes("last")) {
-        //     const inputDate = new Date(val);
-        //     const today = new Date();
-        //     if (inputDate > today) {
-        //         $error.text(`Please enter a date on or before today.`);
-        //         $input.addClass("input-error");
-        //         return false;
-        //     }
-        // } else if ($input.attr("id").includes("next")) {
-        //     const inputDate = new Date(val);
-        //     const today = new Date();
-        //     if (inputDate <= today) {
-        //         $error.text(`Please enter a date after today.`);
-        //         $input.addClass("input-error");
-        //         return false;
-        //     }
-        // }
 
         return true;
     }

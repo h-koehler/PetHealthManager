@@ -34,17 +34,17 @@
             {% block search %}{% endblock %}
             <div class="nav-buttons">
                 <a href="{% url 'pets:home' %}">Home</a>
-                {% if request.session.username %}
+                {% if request.user.is_authenticated %}
                     <a href="{% url 'pets:pets-list' %}">Pets</a>
                 {% else %}
                     <a href="{% url 'users:login' %}">Login</a>
                 {% endif %}
             </div>
-            {% if request.session.username %}
+            {% if request.user.is_authenticated %}
                 <div class="nav-icon">
                     <button><i class="fa-solid fa-message"></i></button>
                 </div>
-                <div class="user-greeting">Welcome back, <a href="{% url 'users:profile' request.session.username %}"><strong>{{ request.session.username }}</strong></a>!</div>
+                <div class="user-greeting">Welcome back, <a href="{% url 'users:profile' request.user.username %}"><strong>{{ request.user.username }}</strong></a>!</div>
                 <div class="nav-icon">
                     <button onclick="openModal()"><i class="fa-solid fa-right-from-bracket"></i></button>
                     <div id="logout-modal" class="modal">
