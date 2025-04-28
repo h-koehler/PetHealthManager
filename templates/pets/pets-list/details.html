@@ -8,6 +8,7 @@
 {% block script %}
     <script src="{% static "js/edit-condition.js" %}"></script>
     <script src="{% static "js/toggle-share-popup.js" %}"></script>
+    <script src="{% static "js/edit-comment.js" %}"></script>
 {% endblock %}
 {% block content %}
     <div class="pet-details-container">
@@ -150,13 +151,51 @@
                     <p>Last updated: {{ pet.last_updated|pretty_date_time }}</p>
                 </div>
             </div>
-            <div class="details-container">
+            <div class="comments-container">
                 <h3>Comments</h3>
-                {% if comments is None %}
-                    No comments
-                {% endif %}
+                <form id="add-comment" method="POST" action="{% url 'pets:comment-create' pet.id %}">
+                    {% csrf_token %}
+                    <label for="comment">Add a comment
+                        <textarea class="comment-box" name="comment" required></textarea>
+                    </label>
+                    <button type="submit" class="secondary-button">Submit</button>
+                </form>
+                {% for comment in comments %}
+                    <div class="comment" data-container-id="{{ comment.id }}">
+                        <div class="comment-content-and-details">
+                            <div class="comment-content">
+                                {{ comment.content }}
+                            </div>
+                            <div class="comment-details">
+                                <span class="commenter">
+                                <a href="{{ comment.user.get_absolute_url }}">{{ comment.user.username }}</a></span>
+                                <span class="date">| {{ comment.posted | get_elapsed_time }}</span>
+                                {% if comment.edited != None %}
+                                    <span>| </span>
+                                    <span class="edited"><i>Edited {{ comment.edited | get_elapsed_time }}</i></span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if request.user.id == comment.user.id %}
+                            <div class="edit-delete-buttons">
+                                <button class="edit-comment" data-comment-id="{{ comment.id }}" data-ajax-url="{% url 'pets:comment-edit' %}">
+                                    <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                                </button>
+                                <form method="POST" action="{% url 'pets:comment-delete' pet.id comment.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" title="Delete"
+                                            style="border:none; background:none; padding:0;">
+                                        <i class="fa-solid fa-trash-can fa-lg"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div>No comments yet.</div>
+                {% endfor %}
             </div>
         </div>
-
     </div>
 {% endblock %}

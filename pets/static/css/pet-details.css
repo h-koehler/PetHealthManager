@@ -19,6 +19,7 @@
     flex-direction: column;
     gap: 1.5em;
     margin-bottom: 3em;
+    align-content: center;
 }
 
 .details-container {
@@ -207,6 +208,87 @@ textarea:focus {
     outline: .15em solid var(--brunswick-green);
 }
 
+.comments-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    background: var(--pale-green);
+    border-radius: 2em;
+    gap: 1em;
+}
+
+.comments-container form#add-comment {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+}
+
+.comments-container form#add-comment label {
+    font-weight: 600;
+}
+
+.comments-container form#add-comment button {
+    width: fit-content;
+}
+
+.comment-details .commenter a,
+.comment-details .commenter a:visited{
+    color: black;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.comment-details .commenter a:hover {
+    text-decoration: underline;
+}
+
+.comment-details .date,
+.comment-details .edited {
+    font-weight: 300;
+}
+
+.comment {
+    background: var(--ivory-green);
+    padding: 1em;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.edit-delete-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: .25em;
+    align-self: center;
+}
+
+.edit-delete-buttons form {
+    padding: .5em .8em;
+    border-radius: 10em;
+    border: none;
+    background: transparent;
+}
+
+.edit-delete-buttons button {
+    padding: .5em .9em;
+    border-radius: 10em;
+    border: none;
+    background: transparent;
+}
+
+.edit-delete-buttons form:hover,
+.edit-delete-buttons button:hover{
+    background: var(--brunswick-green);
+    cursor: pointer;
+    color: white;
+}
+
+.edit-delete-buttons form:hover button i{
+    color: white;
+    cursor: pointer;
+}
+
 /* mobile formatting */
 @media screen and (max-width: 1400px) {
     .pet-details-container {
@@ -235,8 +317,10 @@ textarea:focus {
     }
 
     .details-container {
-        width: fit-content;
+        max-width: 40em;
         gap: 1em;
+        margin: 1em;
+        align-items: center;
     }
 
     .details-container>.top-card {
@@ -246,6 +330,7 @@ textarea:focus {
 
     .sidebar {
         flex-direction: row;
+        width: auto;
     }
 
     .vaccines {

@@ -107,3 +107,10 @@ class Vaccine(models.Model):
 
     def get_absolute_url(self):
         return reverse('pets:pet-details', args=[self.pet.id])
+
+class Comment(models.Model):
+    pet = models.ForeignKey('Pet', on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    posted = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(null=True, blank=True)

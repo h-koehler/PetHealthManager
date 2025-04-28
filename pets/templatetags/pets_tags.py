@@ -35,7 +35,11 @@ def pretty_date_time(dob):
 
 @register.filter
 def get_elapsed_time(date):
-    now = datetime.now()
+    if date is None:
+        return ""
+    now = timezone.now()
+    if timezone.is_naive(date):
+        date = timezone.make_aware(date)
     elapsed = now - date
     seconds = int(elapsed.total_seconds())
     days, remainder = divmod(seconds, 86400)

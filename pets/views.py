@@ -1,52 +1,54 @@
 from datetime import datetime, date
 
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.utils import timezone
 
 from users.models import Vet
-from .models import Pet, Condition, Vaccine
+from .models import Pet, Condition, Vaccine, Comment
 from actions.models import Action
 from .templatetags.pets_tags import pretty_date, get_age_from_dob
 
 
 # Create your views here.
 def home_view(request):
-    role = request.session.get('role')
-    # if role == 'v':
-    #     vet_feed = FeedItem.objects.filter(
-    #         feed_type='inq',
-    #         is_solved=False,
-    #     ).order_by('-date_created')
-    #     return render(request,
-    #                   'pets/home/vet.html',
-    #                   {"feed": vet_feed}
-    #                   )
-    if role == 'o':
-        username = request.user.username
+    if request.user.is_authenticated:
+        role = request.session.get('role')
+        # if role == 'v':
+        #     vet_feed = FeedItem.objects.filter(
+        #         feed_type='inq',
+        #         is_solved=False,
+        #     ).order_by('-date_created')
+        #     return render(request,
+        #                   'pets/home/vet.html',
+        #                   {"feed": vet_feed}
+        #                   )
+        if role == 'o':
+            username = request.user.username
+            user = get_object_or_404(User, username=username)
 
-        user = get_object_or_404(User, username=username)
+            feed = Action.objects.filter(
+                Q(pet__owner=user) | Q(pet__non_owners=user)
+            ).distinct().order_by('-created')
 
-        feed = Action.objects.filter(
-            Q(pet__owner=user) | Q(pet__non_owners=user)
-        ).distinct().order_by('-created')
-
-        return render(request,
-                      "pets/home/owner.html",
-                      {"feed": feed}
-                      )
-    elif role == 'a':
-        feed = Action.objects.all().order_by('-created')
-        return render(request,
-                      "pets/home/owner.html",
-                      {"feed": feed}
-                      )
+            return render(request,
+                          "pets/home/owner.html",
+                          {"feed": feed}
+                          )
+        elif role == 'a':
+            feed = Action.objects.all().order_by('-created')
+            return render(request,
+                          "pets/home/owner.html",
+                          {"feed": feed}
+                          )
     else:
         return redirect("users:login")
 
-def pet_popup(request): # pet popup from vet home
+
+def pet_popup(request):  # pet popup from vet home
     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
     if is_ajax:
         if request.method == 'GET':
@@ -67,6 +69,7 @@ def pet_popup(request): # pet popup from vet home
                 'vaccines': vaccines
             })
 
+
 def pets_view(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -75,10 +78,10 @@ def pets_view(request):
         sort = request.GET.get('sort', 'updated')
 
         sort_map = {
-            'updated' : '-last_updated',
-            'name' : 'name',
-            'dob-ascending' : '-dob',
-            'dob-descending' : 'dob',
+            'updated': '-last_updated',
+            'name': 'name',
+            'dob-ascending': '-dob',
+            'dob-descending': 'dob',
         }
         order_by = sort_map.get(sort, '-last_updated')
         pets = None
@@ -96,20 +99,22 @@ def pets_view(request):
                       {
                           "pets": pets,
                           "clients": clients,
-                          "sort" : sort,
+                          "sort": sort,
                       })
 
     return redirect('pets:home')
 
+
 def pet_details(request, pet_id):
     if request.user.is_authenticated:
         pet = get_object_or_404(Pet, id=pet_id)
-        if pet and (request.user in pet.non_owners.all() or request.user == pet.owner or request.session.get('role') == 'a'):
+        if pet and (request.user in pet.non_owners.all() or request.user == pet.owner or request.session.get(
+                'role') == 'a'):
             conditions = Condition.objects.filter(pet_id=pet_id)
             vaccines = Vaccine.objects.filter(pet_id=pet_id)
             excluded_ids = [pet.owner.id, request.user.id] + list(pet.non_owners.values_list('id', flat=True))
             users = User.objects.exclude(id__in=excluded_ids)
-            comments = None
+            comments = Comment.objects.filter(pet=pet).order_by('-posted')
             return render(request,
                           "pets/pets-list/details.html",
                           {
@@ -121,6 +126,7 @@ def pet_details(request, pet_id):
                           })
         # return error: page not found IF pet with specified id not found
     return redirect('pets:home')
+
 
 def pet_share(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
@@ -135,7 +141,8 @@ def pet_share(request, pet_id):
 
         if user != pet.owner and user not in pet.non_owners.all():
             pet.non_owners.add(user)
-            messages.success(request, f"{pet.name} has successfully been shared with {user.first_name} {user.last_name}.")
+            messages.success(request,
+                             f"{pet.name} has successfully been shared with {user.first_name} {user.last_name}.")
             action = Action(
                 user=request.user,
                 pet=pet,
@@ -228,9 +235,9 @@ def pet_create(request):
             pet_sex = 'male'
 
         action = Action(
-            user = request.user,
-            pet = new_pet,
-            verb = 'pet profile was created',
+            user=request.user,
+            pet=new_pet,
+            verb='pet profile was created',
             target=new_pet,
             description=f"{new_pet.name} is a {pet_sex} {new_pet.breed} that is {get_age_from_dob(dob_date)}"
         )
@@ -246,6 +253,7 @@ def pet_create(request):
         return render(request,
                       "pets/pets-list/create.html", {'vets': vets})
 
+
 def format_value(val):
     if isinstance(val, (datetime, date)):
         return val.strftime("%b %d, %Y")
@@ -259,6 +267,7 @@ def format_value(val):
 
     return str(val).strip()
 
+
 def format_field(val):
     if val == 'dob':
         return 'birthday'
@@ -267,6 +276,7 @@ def format_field(val):
     else:
         return val
 
+
 def format_field_capitalize(val):
     if val == 'dob':
         return 'Birthday'
@@ -274,6 +284,7 @@ def format_field_capitalize(val):
         return 'Profile Picture'
     else:
         return val.capitalize()
+
 
 def pet_edit(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
@@ -408,7 +419,7 @@ def pet_edit(request, pet_id):
                             pet=pet,
                             verb="pet profile was updated",
                             target=pet,
-                            description = changes_desc
+                            description=changes_desc
                         )
 
             # save conditions and vaccines
@@ -488,11 +499,12 @@ def pet_edit(request, pet_id):
                         description="<ul>" + "".join(f"<li>{change}</li>" for change in vaccine_changes) + "</ul>",
                     )
 
-            pet.save(update_fields=['last_updated']) # make sure lastUpdated changes when only conditions / vaccines are changed
+            pet.save(update_fields=[
+                'last_updated'])  # make sure lastUpdated changes when only conditions / vaccines are changed
 
             # INFO message
             messages.add_message(request, messages.INFO,
-                                         "Changes to %s have successfully been saved" % pet.name)
+                                 "Changes to %s have successfully been saved" % pet.name)
 
             return redirect("pets:pet-details", pet_id=pet.id)
 
@@ -515,6 +527,7 @@ def pet_edit(request, pet_id):
                               })
     else:
         return redirect('pets:home')
+
 
 def pet_edit_condition(request):
     is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
@@ -565,3 +578,55 @@ def pet_search(request):
                       {"results": results})
     else:
         return redirect('users:login')
+
+
+def pet_create_comment(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+    if pet.get_user_relation(get_object_or_404(User, username=request.user.username)) != 'unauthorized':
+        if request.method == 'POST':  # create comment
+            content = request.POST.get('comment')
+            new_comment = Comment.objects.create(user=request.user, pet=pet, content=content)
+            new_comment.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 "Comment has successfully been added.")
+            return redirect('pets:pet-details', pet_id=pet.id)
+    else:
+        messages.add_message(request, messages.WARNING,
+                             "You do not have permission to comment on this pet profile.")
+        return redirect('pets:pet-details', pet_id=pet.id)
+
+
+def pet_delete_comment(request, pet_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.user == request.user and comment.user.id == request.user.id:
+        if request.method == 'POST':  # edit comment
+            if request.POST.get('_method') == 'DELETE':
+                comment.delete()
+                messages.add_message(request, messages.WARNING,
+                                     "Comment has been deleted.")
+                return redirect('pets:pet-details', pet_id=pet_id)
+    else:
+        messages.add_message(request, messages.WARNING,
+                             "You do not have permission to make changes to this comment.")
+        return redirect('pets:pet-details', pet_id=pet_id)
+
+def pet_edit_comment(request):
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+    if is_ajax:
+        if request.method == 'GET':
+            comment_id = request.GET.get('comment_id')
+            comment = Comment.objects.get(id=comment_id)
+            return (JsonResponse({
+                'id': comment.id,
+                'content': comment.content,
+            }))
+        if request.method == 'POST':
+            comment_id = request.POST.get('comment_id')
+            comment = Comment.objects.get(id=comment_id)
+            new_content = request.POST.get('content')
+            comment.content = new_content
+            comment.edited = timezone.now()
+            comment.save()
+            return (JsonResponse({
+                'content': comment.content,
+            }))
