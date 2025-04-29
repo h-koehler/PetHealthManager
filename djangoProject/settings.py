@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-dx&&qhmsz5b*(vw5_x6d!pp-b^f(*-n8nl@l)q1ssv29cl3a+m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["petmanager.discovery.cs.vt.edu"]
 
 
 # Application definition

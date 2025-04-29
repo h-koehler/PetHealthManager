@@ -1,0 +1,58 @@
+.manage-users-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 12em;
+}
+
+.title {
+    margin-bottom: 1em;
+}
+
+.users {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: fit-content;
+}
+
+.users form,
+.headings {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    column-gap: 1em;
+    margin-bottom: 0;
+    align-items: center;
+}
+
+form select,
+form button {
+    width: fit-content;
+}
+
+select {
+    font-family: var(--default-font-family);
+    font-size: 1em;
+    border: .15em solid var(--mantis-green);
+    border-radius: 1em;
+    padding: 0.25em .75em;
+    background-color: var(--ivory-green);
+}
+
+select:focus {
+    outline: .15em solid var(--brunswick-green);
+}
+
+.save-button {
+    padding: 1em 1.25em;
+    background-color: var(--mantis-green);
+    border: solid .2em transparent;
+    border-radius: 2em;
+    box-sizing: border-box;
+}
+
+.save-button:hover {
+    cursor: pointer;
+    background-color: var(--pale-green);
+    border: solid .2em var(--mantis-green);
+    box-sizing: border-box;
+}

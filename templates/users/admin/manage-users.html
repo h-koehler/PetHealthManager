@@ -1,0 +1,35 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% block page-title %}Manage Users{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/manage-users.css" %}">
+{% endblock %}
+{% block script %}
+    {# scripts #}
+{% endblock %}
+{% block content %}
+    <div class="manage-users-container">
+        <h2 class="title">Manage Users</h2>
+        <div class="users">
+            <div class="headings">
+                <h3>Username</h3>
+                <h3>Name</h3>
+                <h3>Role</h3>
+                <h3>Save</h3>
+            </div>
+            {% for user in users %}
+                <form class="manage-user-form" id="{{ user.id }}" method="POST" action="{% url 'users:update-role' user.id %}">
+                    {% csrf_token %}
+                    <div class="username">{{ user.username }}</div>
+                    <div class="name">{{ user.first_name }} {{ user.last_name }}</div>
+                    <select id="user-role" name="role" required>
+                        <option value="o" {% if user.details.role == 'o' %}selected{% endif %}>Owner</option>
+                        <option value="v" {% if user.details.role == 'v' %}selected{% endif %}>Vet</option>
+                        <option value="a" {% if user.details.role == 'a' %}selected{% endif %}>Admin</option>
+                    </select>
+                    <button type="submit" class="save-button">Save</button>
+                </form>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

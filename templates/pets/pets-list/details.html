@@ -9,17 +9,18 @@
     <script src="{% static "js/edit-condition.js" %}"></script>
     <script src="{% static "js/toggle-share-popup.js" %}"></script>
     <script src="{% static "js/edit-comment.js" %}"></script>
+    <script src="{% static "js/render-actions.js" %}"></script>
 {% endblock %}
 {% block content %}
     <div class="pet-details-container">
         <div class="sidebar">
             <!-- nonfunctional buttons -->
-            <button class="primary-button active">Pet Profile</button>
-            <button class="primary-button">Updates</button>
+            <button id="profile-tab" class="primary-button active">Pet Profile</button>
+            <button id="updates-tab" class="primary-button get-updates" data-pet-id="{{ pet.id }}" data-ajax-url="{% url 'pets:pet-updates' pet.id %}">Updates</button>
             <button class="primary-button">Files</button>
             <button class="primary-button">Vet Notes</button>
         </div>
-        <div class="main-container">
+        <div id="main-container">
             <div class="details-container">
                 <div class="top-card">
                     <div class="summary-details">
@@ -168,7 +169,7 @@
                             </div>
                             <div class="comment-details">
                                 <span class="commenter">
-                                <a href="{{ comment.user.get_absolute_url }}">{{ comment.user.username }}</a></span>
+                                <a href="{{ comment.user.details.get_absolute_url }}">{{ comment.user.username }}</a></span>
                                 <span class="date">| {{ comment.posted | get_elapsed_time }}</span>
                                 {% if comment.edited != None %}
                                     <span>| </span>
@@ -176,7 +177,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        {% if request.user.id == comment.user.id %}
+                        {% if request.user.id == comment.user.id or request.session.role == 'a'%}
                             <div class="edit-delete-buttons">
                                 <button class="edit-comment" data-comment-id="{{ comment.id }}" data-ajax-url="{% url 'pets:comment-edit' %}">
                                     <i class="fa-solid fa-pen-to-square fa-lg"></i>
@@ -197,5 +198,6 @@
                 {% endfor %}
             </div>
         </div>
+        <div id="updates-content"></div>
     </div>
 {% endblock %}

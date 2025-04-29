@@ -26,7 +26,7 @@ def home_view(request):
         #                   'pets/home/vet.html',
         #                   {"feed": vet_feed}
         #                   )
-        if role == 'o':
+        if role == 'o' or role == 'v':
             username = request.user.username
             user = get_object_or_404(User, username=username)
 
@@ -39,10 +39,10 @@ def home_view(request):
                           {"feed": feed}
                           )
         elif role == 'a':
-            feed = Action.objects.all().order_by('-created')
+            users = User.objects.all()
             return render(request,
-                          "pets/home/owner.html",
-                          {"feed": feed}
+                          "users/admin/manage-users.html",
+                          {"users": users}
                           )
     else:
         return redirect("users:login")
@@ -115,6 +115,7 @@ def pet_details(request, pet_id):
             excluded_ids = [pet.owner.id, request.user.id] + list(pet.non_owners.values_list('id', flat=True))
             users = User.objects.exclude(id__in=excluded_ids)
             comments = Comment.objects.filter(pet=pet).order_by('-posted')
+            actions = Action.objects.filter(pet=pet).order_by('-created')
             return render(request,
                           "pets/pets-list/details.html",
                           {
@@ -123,6 +124,7 @@ def pet_details(request, pet_id):
                               "vaccines": vaccines,
                               "users": users,
                               "comments": comments,
+                              "actions": actions,
                           })
         # return error: page not found IF pet with specified id not found
     return redirect('pets:home')
@@ -589,6 +591,11 @@ def pet_create_comment(request, pet_id):
             new_comment.save()
             messages.add_message(request, messages.SUCCESS,
                                  "Comment has successfully been added.")
+            new_action = Action.objects.create(
+                user=request.user,
+                pet=pet,
+                verb = f'profile has a new comment from <a href="{request.user.details.get_absolute_url()}">{request.user.username}</a>'
+            )
             return redirect('pets:pet-details', pet_id=pet.id)
     else:
         messages.add_message(request, messages.WARNING,
@@ -616,17 +623,33 @@ def pet_edit_comment(request):
         if request.method == 'GET':
             comment_id = request.GET.get('comment_id')
             comment = Comment.objects.get(id=comment_id)
-            return (JsonResponse({
-                'id': comment.id,
-                'content': comment.content,
-            }))
+            if (comment.user.id == request.user.id) or (request.session.get('role') == 'a'):
+                return (JsonResponse({
+                    'id': comment.id,
+                    'content': comment.content,
+                }))
+            else:
+                messages.add_message(request, messages.WARNING,
+                                     "You do not have permission to make changes to this comment.")
+                return redirect('pets:pet-details', pet_id=comment.pet.id)
         if request.method == 'POST':
             comment_id = request.POST.get('comment_id')
             comment = Comment.objects.get(id=comment_id)
-            new_content = request.POST.get('content')
-            comment.content = new_content
-            comment.edited = timezone.now()
-            comment.save()
-            return (JsonResponse({
-                'content': comment.content,
-            }))
+            if (comment.user.id == request.user.id) or (request.session.get('role') == 'a'):
+                new_content = request.POST.get('content')
+                comment.content = new_content
+                comment.edited = timezone.now()
+                comment.save()
+                return (JsonResponse({
+                    'content': comment.content,
+                }))
+            else:
+                messages.add_message(request, messages.WARNING,
+                                     "You do not have permission to make changes to this comment.")
+                return redirect('pets:pet-details', pet_id=comment.pet.id)
+
+
+def pet_updates(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+    actions = Action.objects.filter(pet=pet).order_by('-created')
+    return render(request, 'pets/pets-list/_updates_list.html', {"actions": actions})

@@ -35,6 +35,11 @@ ul {
     padding: 0px;
 }
 
+a:visited,
+a {
+    color: black;
+}
+
 h1 {
     font-family: var(--title-font-family);
     color: var(--brunswick-green);
@@ -56,6 +61,7 @@ h1 {
     border-radius: 5em;
     font-size: 1em;
     text-decoration: none;
+    text-align: center;
 }
 
 .primary-button:hover,
