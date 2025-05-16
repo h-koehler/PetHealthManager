@@ -2,22 +2,27 @@
 services:
   - type: web
     name: pet-health-manager
-    env: python
+    runtime: python
+    repo: https://github.com/h-koehler/PetHealthManager
+    branch: render-deployment
+    plan: free
+    region: virginia
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: DEBUG
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
-    startCommand: gunicorn djangoProject.wsgi:application
-    staticPublishPath: staticfiles
-    routes:
-      - type: static
-        path: /static
-    postDeploy:
-      - python manage.py migrate --noinput
-      - python manage.py loaddata initial_data.json
+    startCommand: |
+      python manage.py migrate --noinput \
+        && python manage.py loaddata p6.json \
+        && gunicorn djangoProject.wsgi:application
 
-  - type: static
-    name: pet-media
-    env: python
-    staticPublishPath: media
-    routes:
-      - path: /media
+    autoDeployTrigger: "off"

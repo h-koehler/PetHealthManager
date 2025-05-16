@@ -103,11 +103,11 @@ def login_user(request):
             request.session['role'] = user.details.role
             messages.add_message(request, messages.SUCCESS,
                                  "You have successfully logged in.")
+            return redirect('pets:home')
         else:
             messages.add_message(request, messages.ERROR,
                                  "Invalid username or password.")
-
-        return render(request, "pets/home/login.html")
+            return render(request, "pets/home/login.html")
 
 def logout_user(request):
     logout(request)

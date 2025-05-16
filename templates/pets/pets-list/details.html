@@ -25,7 +25,7 @@
                 <div class="top-card">
                     <div class="summary-details">
                         {% if pet.pfp %}
-                            <img class="pet-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
+                            <img class="pet-photo" src="{% static "pets/img/" %}{{ pet.name|img_name }}.jpg" alt="Image of {{ pet.name }}">
                         {% else %}
                             <img class="pet-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                                  alt="Default pet profile image">

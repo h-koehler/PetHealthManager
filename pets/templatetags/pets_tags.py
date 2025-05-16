@@ -80,3 +80,10 @@ def pretty_phone_number(number):
 def truncate_pfp_url(url):
     url = str(url)
     return url[13:] if url.startswith("pet_profiles/") else url
+
+@register.filter(name="img_name")
+def img_name(value):
+    if not isinstance(value, str):
+        return ""
+    m = re.match(r"[A-Za-z]+", value)
+    return m.group(0).lower() if m else ""

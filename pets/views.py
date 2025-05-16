@@ -570,7 +570,7 @@ def pet_search(request):
         lower_keyword = keyword.lower()
         results = []
         current_user = get_object_or_404(User, username=request.user.username)
-        pets = Pet.objects.filter(Q(owner=current_user) | Q(non_owners=current_user))
+        pets = Pet.objects.filter(Q(owner=current_user) | Q(non_owners=current_user)).distinct()
         for pet in pets:
             if pet.name.lower().startswith(lower_keyword):
                 results.append(pet)
