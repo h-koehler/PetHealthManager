@@ -1,0 +1,17 @@
+{% extends "pets/base.html" %}
+{% load static %}
+{% block page-title %}Login{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static "css/home-unauthenticated.css" %}">
+{% endblock %}
+{% block content %}
+    <div class="home-container">
+        <div class="hero-content">
+            <img class="hero-img" src="{% static "img/hero.jpg" %}" alt="A cat and dog laying in the grass">
+            <div class="hero-txt">
+                <h2>Track and Share Your Pet's Health</h2>
+                <a href="{% url "users:register-select" %}" class="primary-button">Sign Up</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

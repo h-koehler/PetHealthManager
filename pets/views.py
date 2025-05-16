@@ -45,7 +45,7 @@ def home_view(request):
                           {"users": users}
                           )
     else:
-        return redirect("users:login")
+        return render(request, 'pets/home/home.html')
 
 
 def pet_popup(request):  # pet popup from vet home
@@ -605,7 +605,7 @@ def pet_create_comment(request, pet_id):
 
 def pet_delete_comment(request, pet_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    if comment.user == request.user and comment.user.id == request.user.id:
+    if (comment.user == request.user and comment.user.id == request.user.id) or (request.session.get('role') == 'a'):
         if request.method == 'POST':  # edit comment
             if request.POST.get('_method') == 'DELETE':
                 comment.delete()
