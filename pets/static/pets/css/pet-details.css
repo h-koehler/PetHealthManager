@@ -78,6 +78,7 @@
 .contact-info > .user-info a,
 .contact-info > .user-info a:visited{
     color: black;
+    text-decoration: underline;
 }
 
 .contact-info .row,

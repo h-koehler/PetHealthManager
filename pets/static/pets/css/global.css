@@ -159,7 +159,8 @@ header img {
 }
 
 .user-greeting > a {
-     color: black;
+    color: black;
+    text-decoration: underline;
 }
 
 .icon-wrapper {
