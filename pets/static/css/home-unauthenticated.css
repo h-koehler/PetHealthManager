@@ -1,0 +1,41 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 80vh;
+}
+
+.hero-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(50%);
+}
+
+.hero-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hero-txt h2 {
+    font-family: var(--default-font-family);
+    color: var(--pale-green);
+    font-size: 3em;
+}
+
+.hero-txt a {
+    width: fit-content;
+    align-self: center;
+}
