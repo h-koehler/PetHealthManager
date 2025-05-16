@@ -3,7 +3,7 @@
 {% load static %}
 {% block page-title %}Profile for {{ user.username }}{% endblock %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static "css/profile.css" %}">
+    <link rel="stylesheet" href="{% static "users/css/profile.css" %}">
 {% endblock %}
 {% block script %}
     {#    <script src="{% static "js/edit-condition.js" %}"></script>#}
@@ -20,7 +20,7 @@
                 {% if user.pfp %}
                     <img class="user-photo" src="{{ user.pfp.url }}" alt="Image of {{ user.username }}">
                 {% else %}
-                    <img class="user-photo" src="{% static 'img/default-pfp.jpg' %}"
+                    <img class="user-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                          alt="Default user profile image">
                 {% endif %}
             </div>

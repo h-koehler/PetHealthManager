@@ -3,7 +3,7 @@
 {% load pets_tags %}
 {% block page-title %}Pets{% endblock %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static "css/pets-list.css" %}">
+    <link rel="stylesheet" href="{% static "pets/css/pets-list.css" %}">
 {% endblock %}
 {% block search %}
     <form id="search-pet-list" method="GET" action="{% url "pets:pet-search" %}">
@@ -23,7 +23,7 @@
                     <div id="search-error">
                         <p>Sorry! No results available.</p>
                         <!-- https://www.istockphoto.com/photo/intrigued-gm94740594-1876328?searchscope=image%2Cfilm -->
-                        <img class="error-img" src="{% static "img/search-error.png" %}"
+                        <img class="error-img" src="{% static "pets/img/search-error.png" %}"
                              alt="Image of dog looking confused.">
                     </div>
                 {% else %}
@@ -34,7 +34,7 @@
                                     <img class="pet-card-photo"
                                          src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
                                 {% else %}
-                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                    <img class="pet-card-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                                          alt="Default pet profile image">
                                 {% endif %}
                                 <div class="pet-card-info">
@@ -49,7 +49,7 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                    <object type="image/svg+xml" data="{% static 'img/small.svg' %}" class="icon-svg"></object>
+                                                    <object type="image/svg+xml" data="{% static 'pets/img/small.svg' %}" class="icon-svg"></object>
                                                 </span>
                                             {% elif pet.type == "r" %}
                                                 <i class="fa-solid fa-worm"></i>

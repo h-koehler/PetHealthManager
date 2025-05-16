@@ -6,13 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Health Manager | {% block page-title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static "css/global.css" %}">
-    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static "users/css/global.css" %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'pets/img/favicon.ico' %}">
     {% block stylesheet %}{% endblock %}
     <script src="https://kit.fontawesome.com/dec04a1e75.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{% static "js/dropdown.js" %}"></script>
-    <script src="{% static "js/logout-modal.js" %}"></script>
+    <script src="{% static "users/js/dropdown.js" %}"></script>
+    <script src="{% static "users/js/logout-modal.js" %}"></script>
     {% block script %}{% endblock %}
 </head>
 
@@ -27,7 +27,7 @@
     {% endif %}
     <header>
         <div class="logo">
-            <img src="{% static "img/logo.png" %}" alt="Logo">
+            <img src="{% static "pets/img/logo.png" %}" alt="Logo">
             <h1>Pet Health Manager</h1>
         </div>
 

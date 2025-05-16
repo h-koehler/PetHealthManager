@@ -3,7 +3,7 @@
 {% load pets_tags %}
 {% block page-title %}Pets{% endblock %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static "css/pets-list.css" %}">
+    <link rel="stylesheet" href="{% static "pets/css/pets-list.css" %}">
 {% endblock %}
 {% block search %}
     <form id="search-pet-list" method="GET" action="{% url "pets:pet-search" %}">
@@ -38,7 +38,7 @@
             <div class="empty-pet-list">
                 <p>Sorry! There are no pets to display at the moment.</p>
                 {#                https://unsplash.com/photos/a-close-up-of-a-cat-with-green-eyes-FntgSXIlSwM#}
-                <img class="empty-list-img" src="{% static "img/empty-list.jpg" %}" alt="Image of a cat looking sad">
+                <img class="empty-list-img" src="{% static "pets/img/empty-list.jpg" %}" alt="Image of a cat looking sad">
             </div>
         {% else %}
             {% if request.session.role == 'v' or request.session.role == 'a' %}
@@ -54,7 +54,7 @@
                                 {% if pet.pfp %}
                                     <img class="pet-card-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
                                 {% else %}
-                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                    <img class="pet-card-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                                          alt="Default pet profile image">
                                 {% endif %}
                                 <div class="pet-card-info">
@@ -69,7 +69,7 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                        <img src="{% static 'img/small.svg' %}" class="icon-svg">
+                                                        <img src="{% static 'pets/img/small.svg' %}" class="icon-svg">
                                                     </span>
                                             {% elif pet.type == "r" %}
                                                 <i class="fa-solid fa-worm"></i>
@@ -95,7 +95,7 @@
                                 {% if pet.pfp %}
                                     <img class="pet-card-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
                                 {% else %}
-                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                    <img class="pet-card-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                                          alt="Default pet profile image">
                                 {% endif %}
                                 <div class="pet-card-info">
@@ -111,7 +111,7 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                        <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                                        <object type="image/svg+xml" data="{% static 'pets/img/small.svg' %}"
                                                                 class="icon-svg"></object>
                                                     </span>
                                             {% elif pet.type == "r" %}
@@ -138,7 +138,7 @@
                                 {% if pet.pfp %}
                                     <img class="pet-card-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
                                 {% else %}
-                                    <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                                    <img class="pet-card-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                                          alt="Default pet profile image">
                                 {% endif %}
                                 <div class="pet-card-info">
@@ -153,7 +153,7 @@
                                                 <i class="fa-solid fa-fish"></i>
                                             {% elif pet.type == "s" %}
                                                 <span class="icon-wrapper">
-                                                        <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                                        <object type="image/svg+xml" data="{% static 'pets/img/small.svg' %}"
                                                                 class="icon-svg"></object>
                                                     </span>
                                             {% elif pet.type == "r" %}

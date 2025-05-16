@@ -1,0 +1,20 @@
+# render.yaml in your repo root
+services:
+  - type: web
+    name: pet-health-manager
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate && gunicorn djangoProject.wsgi:application
+    staticPublishPath: staticfiles
+    routes:
+      - type: static
+        path: /static
+
+  - type: static
+    name: pet-media
+    env: python
+    staticPublishPath: media
+    routes:
+      - path: /media

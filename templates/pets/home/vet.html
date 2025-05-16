@@ -4,10 +4,10 @@
 {% load static %}
 {% block page-title %}Home{% endblock %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static "css/home-vet.css" %}">
+    <link rel="stylesheet" href="{% static "pets/css/home-vet.css" %}">
 {% endblock %}
 {% block script %}
-    <script src="{% static "js/home-view-popup.js" %}"></script>
+    <script src="{% static "users/js/home-view-popup.js" %}"></script>
 {% endblock %}
 {% block content %}
     <div class="feed">
@@ -28,7 +28,7 @@
                         <img class="pet-card-photo" src="{{ feedItem.pet.pfp.url }}"
                              alt="Image of {{ feedItem.pet.name }}">
                     {% else %}
-                        <img class="pet-card-photo" src="{% static 'img/default-pfp.jpg' %}"
+                        <img class="pet-card-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                              alt="Default pet profile image">
                     {% endif %}
                     <div class="pet-card-info">
@@ -43,7 +43,7 @@
                                     <i class="fa-solid fa-fish"></i>
                                 {% elif feedItem.pet.type == "s" %}
                                     <span class="icon-wrapper">
-                                        <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                        <object type="image/svg+xml" data="{% static 'pets/img/small.svg' %}"
                                                 class="icon-svg"></object>
                                     </span>
                                 {% elif feedItem.pet.type == "r" %}

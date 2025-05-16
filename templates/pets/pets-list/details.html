@@ -3,13 +3,13 @@
 {% load static %}
 {% block page-title %}{{ pet.name }}{% endblock %}
 {% block stylesheet %}
-    <link rel="stylesheet" href="{% static "css/pet-details.css" %}">
+    <link rel="stylesheet" href="{% static "pets/css/pet-details.css" %}">
 {% endblock %}
 {% block script %}
-    <script src="{% static "js/edit-condition.js" %}"></script>
-    <script src="{% static "js/toggle-share-popup.js" %}"></script>
-    <script src="{% static "js/edit-comment.js" %}"></script>
-    <script src="{% static "js/render-actions.js" %}"></script>
+    <script src="{% static "pets/js/edit-condition.js" %}"></script>
+    <script src="{% static "pets/js/toggle-share-popup.js" %}"></script>
+    <script src="{% static "pets/js/edit-comment.js" %}"></script>
+    <script src="{% static "pets/js/render-actions.js" %}"></script>
 {% endblock %}
 {% block content %}
     <div class="pet-details-container">
@@ -27,7 +27,7 @@
                         {% if pet.pfp %}
                             <img class="pet-photo" src="{{ pet.pfp.url }}" alt="Image of {{ pet.name }}">
                         {% else %}
-                            <img class="pet-photo" src="{% static 'img/default-pfp.jpg' %}"
+                            <img class="pet-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
                                  alt="Default pet profile image">
                         {% endif %}
                         <div class="summary-info">
@@ -42,7 +42,7 @@
                                     <i class="fa-solid fa-fish"></i>
                                 {% elif pet.type == "s" %}
                                     <span class="icon-wrapper">
-                                    <object type="image/svg+xml" data="{% static 'img/small.svg' %}"
+                                    <object type="image/svg+xml" data="{% static 'pets/img/small.svg' %}"
                                             class="icon-svg"></object>
                                 </span>
                                 {% elif pet.type == "r" %}
