@@ -6,11 +6,14 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
-    startCommand: python manage.py migrate && gunicorn djangoProject.wsgi:application
+    startCommand: gunicorn djangoProject.wsgi:application
     staticPublishPath: staticfiles
     routes:
       - type: static
         path: /static
+    postDeploy:
+      - python manage.py migrate --noinput
+      - python manage.py loaddata initial_data.json
 
   - type: static
     name: pet-media
