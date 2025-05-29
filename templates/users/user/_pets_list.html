@@ -1,0 +1,40 @@
+{% load static %}
+{% load pets_tags %}
+<link rel="stylesheet" href="{% static "pets/css/pets-list.css" %}">
+<div class="pets-list">
+    {% for pet in pets %}
+        <a href="{% url "pets:pet-details" pet.id %}" class="pet-card">
+            {% if pet.pfp %}
+                <img class="pet-card-photo" src="{% static "pets/img/" %}{{ pet.name|img_name }}.jpg"
+                     alt="Image of {{ pet.name }}">
+            {% else %}
+                <img class="pet-card-photo" src="{% static 'pets/img/default-pfp.jpg' %}"
+                     alt="Default pet profile image">
+            {% endif %}
+            <div class="pet-card-info">
+                <div>
+                    <h2>{{ pet.name }}</h2>
+                    <p>
+                        {% if pet.type == "d" %}
+                            <i class="fa-solid fa-dog"></i>
+                        {% elif pet.type == "c" %}
+                            <i class="fa-solid fa-cat"></i>
+                        {% elif pet.type == "f" %}
+                            <i class="fa-solid fa-fish"></i>
+                        {% elif pet.type == "s" %}
+                            <span class="icon-wrapper">
+                                                        <img src="{% static 'pets/img/small.svg' %}" class="icon-svg">
+                                                    </span>
+                        {% elif pet.type == "r" %}
+                            <i class="fa-solid fa-worm"></i>
+                        {% elif pet.type == "b" %}
+                            <i class="fa-solid fa-crow"></i>
+                        {% endif %}
+                        {{ pet.breed }}</p>
+                    <p>{{ pet.get_sex_display }}, {{ pet.dob|get_age_from_dob }}</p>
+                </div>
+                <i>Last updated {{ pet.last_updated | pretty_date }}</i>
+            </div>
+        </a>
+    {% endfor %}
+</div>

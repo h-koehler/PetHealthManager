@@ -4,7 +4,6 @@ app_name = 'pets'
 urlpatterns = [
     # pets views
     # path('', views.index, name='index'),
-    path('', views.home_view, name='home'),
     path('list/', views.pets_view, name='pets-list'),
     path('<int:pet_id>/', views.pet_details, name='pet-details'),
     path('<int:pet_id>/updates/', views.pet_updates, name='pet-updates'),

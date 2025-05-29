@@ -22,7 +22,6 @@ from pets.views import home_view
 
 urlpatterns = [
     path('', home_view, name='home'),
-
     path('admin/', admin.site.urls),
     path('pets/', include('pets.urls', namespace='pets')),
     path('users/', include('users.urls', namespace='users')),

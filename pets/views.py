@@ -102,7 +102,7 @@ def pets_view(request):
                           "sort": sort,
                       })
 
-    return redirect('pets:home')
+    return redirect('home')
 
 
 def pet_details(request, pet_id):
@@ -127,7 +127,7 @@ def pet_details(request, pet_id):
                               "actions": actions,
                           })
         # return error: page not found IF pet with specified id not found
-    return redirect('pets:home')
+    return redirect('home')
 
 
 def pet_share(request, pet_id):
@@ -161,7 +161,7 @@ def pet_share(request, pet_id):
 
 def pet_create(request):
     if not request.session.get('role') == 'o' or not request.user.username:
-        return redirect('pets:home')
+        return redirect('home')
 
     if request.method == "POST":
         vet_id = request.POST.get('vet_select')
@@ -528,7 +528,7 @@ def pet_edit(request, pet_id):
                                   "relation": relation,
                               })
     else:
-        return redirect('pets:home')
+        return redirect('home')
 
 
 def pet_edit_condition(request):
@@ -647,6 +647,7 @@ def pet_edit_comment(request):
                 messages.add_message(request, messages.WARNING,
                                      "You do not have permission to make changes to this comment.")
                 return redirect('pets:pet-details', pet_id=comment.pet.id)
+    return None
 
 
 def pet_updates(request, pet_id):

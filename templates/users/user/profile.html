@@ -6,16 +6,17 @@
     <link rel="stylesheet" href="{% static "users/css/profile.css" %}">
 {% endblock %}
 {% block script %}
-    {#    <script src="{% static "js/edit-condition.js" %}"></script>#}
+        <script src="{% static "users/js/render-pets.js" %}"></script>
 {% endblock %}
 {% block content %}
     <div class="profile-container">
         <div class="sidebar">
             <!-- nonfunctional buttons -->
-            <button class="primary-button active">Profile</button>
-            <button class="primary-button">Pets</button>
+            <button class="primary-button active" id="profile-tab">Profile</button>
+            {% csrf_token %}
+            <button class="primary-button" id="pets-tab" data-username="{{ user.username }}" data-ajax-url="{% url 'users:pets-list' user.username %}">Pets</button>
         </div>
-        <div class="details-container">
+        <div class="details-container" id="profile-details">
             <div class="pfp">
                 {% if user.pfp %}
                     <img class="user-photo" src="{{ user.pfp.url }}" alt="Image of {{ user.username }}">
@@ -41,7 +42,7 @@
                 <p><b>Phone:</b> {{ user.details.phone | pretty_phone_number }}</p>
                 {% if user.details.role == 'v' %}
                     <p><b>Clinic Name:</b> {{ user.details.clinic_name }}</p>
-                    {% endif %}
+                {% endif %}
             </div>
             <div class="row">
                 {% if user.username == request.user.username or request.session.role == 'a' %}
@@ -57,5 +58,6 @@
                 </a>
             </div>
         </div>
+        <div id="user-pets"></div>
     </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, update_session_auth_hash, login, logout
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -77,7 +78,7 @@ def register(request):
         messages.add_message(request, messages.SUCCESS,
                              "You have successfully registered as a %s with the username: %s" % (
                              role_human, user.username))
-        return redirect('pets:home')
+        return redirect('home')
     if request.method == 'GET':
         role = request.GET.get('role')
         return render(request, 'users/user/register.html', {'role': role})
@@ -103,7 +104,7 @@ def login_user(request):
             request.session['role'] = user.details.role
             messages.add_message(request, messages.SUCCESS,
                                  "You have successfully logged in.")
-            return redirect('pets:home')
+            return redirect('home')
         else:
             messages.add_message(request, messages.ERROR,
                                  "Invalid username or password.")
@@ -111,7 +112,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('pets:home')
+    return redirect('home')
 
 
 def edit_profile(request, username):
@@ -228,4 +229,10 @@ def update_role(request, user_id):
         messages.add_message(request, messages.SUCCESS,
                              f"{user.username}'s vet profile has been disconnected.")
 
-    return redirect('pets:home')
+    return redirect('home')
+
+def pets_list(request, username):
+    user = get_object_or_404(User, username=username)
+    pets = Pet.objects.filter(Q(owner=user))
+
+    return render(request, 'users/user/_pets_list.html', {"pets": pets})
