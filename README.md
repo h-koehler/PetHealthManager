@@ -43,5 +43,5 @@ This may take a while to load.
    ```
 6. Load data
    ```
-   python manage.py loaddata p6.json
+   python manage.py loaddata demo.json
    ```
