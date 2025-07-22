@@ -1,5 +1,6 @@
 .login-window {
     display: flex;
+    position: relative;
     flex-direction: column;
     background-color: var(--pale-green);
     width: fit-content;
@@ -8,6 +9,15 @@
     justify-content: center;
     align-items: center;
     align-self: center;
+}
+
+.demo-information {
+    background-color: #ffffff;
+    border: .25em solid var(--brunswick-green);
+    padding: .5em 1em;
+    border-radius: 1em;
+    margin-top: 1em;
+    text-align: center;
 }
 
 form#login-box {
@@ -52,3 +62,12 @@ form > a:hover {
 form > a:visited {
     color: var(--brunswick-green);
 }
+
+/*@media screen and (max-width: 1000px) {*/
+/*    .demo-information {*/
+/*        display:*/
+/*        top: 100%;*/
+/*        right: 50%;*/
+/*        transform: translateX(-50%);*/
+/*    }*/
+/*}*/
